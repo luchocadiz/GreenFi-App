@@ -1,0 +1,35 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/Donations.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity >=0.8.0 <0.9.0;\n\n/**\n * @title Donation struct\n */\nstruct Donation {\n    uint256 amount;\n    string donorName;\n    string message;\n    uint256 time;\n    address donorAddress;\n}\n\n/**\n * @title Project struct\n */\nstruct Project {\n    uint256 id;\n    string projectName;\n    string ngoName;\n    address payable ngoWallet;\n    uint256 targetAmount;\n    uint256 raisedAmount;\n    bool active;\n    uint256 createdAt;\n}\n\n/**\n * @title NGODonations - Ultra Optimized Version\n * @dev Minimal contract for NGO project donations\n */\ncontract NGODonations {\n    address payable public owner;\n    uint256 public nextProjectId = 1;\n    \n    // Core mappings\n    mapping(uint256 => Project) public projects;\n    mapping(uint256 => Donation[]) public projectDonations;\n    \n    // Custom errors (más eficientes que require)\n    error InsufficientFunds();\n    error InvalidArguments();\n    error OnlyOwner();\n    error ProjectNotFound();\n    error OnlyNGOOrOwner();\n\n    // Events esenciales\n    event ProjectCreated(\n        uint256 indexed projectId, \n        string projectName, \n        address indexed ngoWallet,\n        uint256 targetAmount\n    );\n    \n    event DonationReceived(\n        uint256 indexed projectId, \n        address indexed donor, \n        uint256 amount\n    );\n    \n    event FundsWithdrawn(\n        uint256 indexed projectId, \n        uint256 amount\n    );\n\n    constructor() {\n        owner = payable(msg.sender);\n    }\n\n    /**\n     * @dev Create project (only owner)\n     */\n    function createProject(\n        string calldata projectName,\n        string calldata ngoName,\n        address payable ngoWallet,\n        uint256 targetAmount\n    ) external returns (uint256) {\n        if (msg.sender != owner) revert OnlyOwner();\n        if (bytes(projectName).length == 0) revert InvalidArguments();\n        if (ngoWallet == address(0)) revert InvalidArguments();\n        if (targetAmount == 0) revert InvalidArguments();\n\n        uint256 projectId = nextProjectId++;\n        \n        projects[projectId] = Project({\n            id: projectId,\n            projectName: projectName,\n            ngoName: ngoName,\n            ngoWallet: ngoWallet,\n            targetAmount: targetAmount,\n            raisedAmount: 0,\n            active: true,\n            createdAt: block.timestamp\n        });\n        \n        emit ProjectCreated(projectId, projectName, ngoWallet, targetAmount);\n        return projectId;\n    }\n\n    /**\n     * @dev Donate to project\n     */\n    function donateToProject(\n        uint256 projectId, \n        string calldata donorName, \n        string calldata message\n    ) external payable {\n        Project storage project = projects[projectId];\n        \n        if (project.id == 0) revert ProjectNotFound();\n        if (!project.active) revert InvalidArguments();\n        if (msg.value == 0) revert InsufficientFunds();\n\n        // Update project\n        project.raisedAmount += msg.value;\n        \n        // Store donation\n        projectDonations[projectId].push(Donation({\n            amount: msg.value,\n            donorName: donorName,\n            message: message,\n            time: block.timestamp,\n            donorAddress: msg.sender\n        }));\n        \n        emit DonationReceived(projectId, msg.sender, msg.value);\n    }\n\n    /**\n     * @dev Withdraw funds (only NGO or owner)\n     */\n    function withdrawFunds(uint256 projectId) external {\n        Project storage project = projects[projectId];\n        \n        if (project.id == 0) revert ProjectNotFound();\n        if (msg.sender != project.ngoWallet && msg.sender != owner) {\n            revert OnlyNGOOrOwner();\n        }\n        \n        uint256 balance = project.raisedAmount;\n        if (balance == 0) revert InsufficientFunds();\n        \n        project.raisedAmount = 0;\n        \n        (bool sent,) = project.ngoWallet.call{value: balance}(\"\");\n        require(sent, \"Transfer failed\");\n        \n        emit FundsWithdrawn(projectId, balance);\n    }\n\n    /**\n     * @dev Get project info\n     */\n    function getProject(uint256 projectId) external view returns (Project memory) {\n        Project memory project = projects[projectId];\n        if (project.id == 0) revert ProjectNotFound();\n        return project;\n    }\n\n    /**\n     * @dev Get project donations\n     */\n    function getProjectDonations(uint256 projectId) external view returns (Donation[] memory) {\n        if (projects[projectId].id == 0) revert ProjectNotFound();\n        return projectDonations[projectId];\n    }\n\n    /**\n     * @dev Reject direct ETH\n     */\n    receive() external payable {\n        revert InvalidArguments();\n    }\n}"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}

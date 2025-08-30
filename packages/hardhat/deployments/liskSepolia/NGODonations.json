@@ -1,0 +1,666 @@
+{
+  "address": "0x0CeB5D12f5154FBbFe17618c36C486D1Dd4bBBD5",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "InsufficientFunds",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidArguments",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "OnlyNGOOrOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "OnlyOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ProjectNotFound",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "projectId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "donor",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "DonationReceived",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "projectId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "FundsWithdrawn",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "projectId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "projectName",
+          "type": "string"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "ngoWallet",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "targetAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "ProjectCreated",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "projectName",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "ngoName",
+          "type": "string"
+        },
+        {
+          "internalType": "address payable",
+          "name": "ngoWallet",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "targetAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "createProject",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "projectId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "donorName",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "name": "donateToProject",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "projectId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getProject",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "projectName",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "ngoName",
+              "type": "string"
+            },
+            {
+              "internalType": "address payable",
+              "name": "ngoWallet",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "targetAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "raisedAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "active",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "createdAt",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct Project",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "projectId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getProjectDonations",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "donorName",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "message",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "time",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "donorAddress",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct Donation[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "nextProjectId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address payable",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "projectDonations",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "donorName",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "message",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "time",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "donorAddress",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "projects",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "projectName",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "ngoName",
+          "type": "string"
+        },
+        {
+          "internalType": "address payable",
+          "name": "ngoWallet",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "targetAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "raisedAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "active",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256",
+          "name": "createdAt",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "projectId",
+          "type": "uint256"
+        }
+      ],
+      "name": "withdrawFunds",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
+    }
+  ],
+  "transactionHash": "0x60f883d72f7ef260d0d2c2b51744fc802b15f03c07d5857804b25def6391c15b",
+  "receipt": {
+    "to": null,
+    "from": "0x0969d8d2Dd4Ec5EB309F45d24CB516F05C5adE4D",
+    "contractAddress": "0x0CeB5D12f5154FBbFe17618c36C486D1Dd4bBBD5",
+    "transactionIndex": 1,
+    "gasUsed": "1232331",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x7749050ee35c7b62650971b56f0e1eb14bb02cc7945ea52042a476bf15cdccd0",
+    "transactionHash": "0x60f883d72f7ef260d0d2c2b51744fc802b15f03c07d5857804b25def6391c15b",
+    "logs": [],
+    "blockNumber": 25641811,
+    "cumulativeGasUsed": "1278463",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "c4b6d6f42f78e87e9f8e9e47c6cf3912",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"InsufficientFunds\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidArguments\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"OnlyNGOOrOwner\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"OnlyOwner\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ProjectNotFound\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"projectId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"donor\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"DonationReceived\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"projectId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"FundsWithdrawn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"projectId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"projectName\",\"type\":\"string\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"ngoWallet\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"targetAmount\",\"type\":\"uint256\"}],\"name\":\"ProjectCreated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"projectName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"ngoName\",\"type\":\"string\"},{\"internalType\":\"address payable\",\"name\":\"ngoWallet\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"targetAmount\",\"type\":\"uint256\"}],\"name\":\"createProject\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"projectId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"donorName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"message\",\"type\":\"string\"}],\"name\":\"donateToProject\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"projectId\",\"type\":\"uint256\"}],\"name\":\"getProject\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"projectName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"ngoName\",\"type\":\"string\"},{\"internalType\":\"address payable\",\"name\":\"ngoWallet\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"targetAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"raisedAmount\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"active\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"}],\"internalType\":\"struct Project\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"projectId\",\"type\":\"uint256\"}],\"name\":\"getProjectDonations\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"donorName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"message\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"time\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"donorAddress\",\"type\":\"address\"}],\"internalType\":\"struct Donation[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"nextProjectId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"projectDonations\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"donorName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"message\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"time\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"donorAddress\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"projects\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"projectName\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"ngoName\",\"type\":\"string\"},{\"internalType\":\"address payable\",\"name\":\"ngoWallet\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"targetAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"raisedAmount\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"active\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"projectId\",\"type\":\"uint256\"}],\"name\":\"withdrawFunds\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}],\"devdoc\":{\"details\":\"Minimal contract for NGO project donations\",\"kind\":\"dev\",\"methods\":{\"createProject(string,string,address,uint256)\":{\"details\":\"Create project (only owner)\"},\"donateToProject(uint256,string,string)\":{\"details\":\"Donate to project\"},\"getProject(uint256)\":{\"details\":\"Get project info\"},\"getProjectDonations(uint256)\":{\"details\":\"Get project donations\"},\"withdrawFunds(uint256)\":{\"details\":\"Withdraw funds (only NGO or owner)\"}},\"title\":\"NGODonations - Ultra Optimized Version\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/Donations.sol\":\"NGODonations\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/Donations.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity >=0.8.0 <0.9.0;\\n\\n/**\\n * @title Donation struct\\n */\\nstruct Donation {\\n    uint256 amount;\\n    string donorName;\\n    string message;\\n    uint256 time;\\n    address donorAddress;\\n}\\n\\n/**\\n * @title Project struct\\n */\\nstruct Project {\\n    uint256 id;\\n    string projectName;\\n    string ngoName;\\n    address payable ngoWallet;\\n    uint256 targetAmount;\\n    uint256 raisedAmount;\\n    bool active;\\n    uint256 createdAt;\\n}\\n\\n/**\\n * @title NGODonations - Ultra Optimized Version\\n * @dev Minimal contract for NGO project donations\\n */\\ncontract NGODonations {\\n    address payable public owner;\\n    uint256 public nextProjectId = 1;\\n    \\n    // Core mappings\\n    mapping(uint256 => Project) public projects;\\n    mapping(uint256 => Donation[]) public projectDonations;\\n    \\n    // Custom errors (m\\u00e1s eficientes que require)\\n    error InsufficientFunds();\\n    error InvalidArguments();\\n    error OnlyOwner();\\n    error ProjectNotFound();\\n    error OnlyNGOOrOwner();\\n\\n    // Events esenciales\\n    event ProjectCreated(\\n        uint256 indexed projectId, \\n        string projectName, \\n        address indexed ngoWallet,\\n        uint256 targetAmount\\n    );\\n    \\n    event DonationReceived(\\n        uint256 indexed projectId, \\n        address indexed donor, \\n        uint256 amount\\n    );\\n    \\n    event FundsWithdrawn(\\n        uint256 indexed projectId, \\n        uint256 amount\\n    );\\n\\n    constructor() {\\n        owner = payable(msg.sender);\\n    }\\n\\n    /**\\n     * @dev Create project (only owner)\\n     */\\n    function createProject(\\n        string calldata projectName,\\n        string calldata ngoName,\\n        address payable ngoWallet,\\n        uint256 targetAmount\\n    ) external returns (uint256) {\\n        if (msg.sender != owner) revert OnlyOwner();\\n        if (bytes(projectName).length == 0) revert InvalidArguments();\\n        if (ngoWallet == address(0)) revert InvalidArguments();\\n        if (targetAmount == 0) revert InvalidArguments();\\n\\n        uint256 projectId = nextProjectId++;\\n        \\n        projects[projectId] = Project({\\n            id: projectId,\\n            projectName: projectName,\\n            ngoName: ngoName,\\n            ngoWallet: ngoWallet,\\n            targetAmount: targetAmount,\\n            raisedAmount: 0,\\n            active: true,\\n            createdAt: block.timestamp\\n        });\\n        \\n        emit ProjectCreated(projectId, projectName, ngoWallet, targetAmount);\\n        return projectId;\\n    }\\n\\n    /**\\n     * @dev Donate to project\\n     */\\n    function donateToProject(\\n        uint256 projectId, \\n        string calldata donorName, \\n        string calldata message\\n    ) external payable {\\n        Project storage project = projects[projectId];\\n        \\n        if (project.id == 0) revert ProjectNotFound();\\n        if (!project.active) revert InvalidArguments();\\n        if (msg.value == 0) revert InsufficientFunds();\\n\\n        // Update project\\n        project.raisedAmount += msg.value;\\n        \\n        // Store donation\\n        projectDonations[projectId].push(Donation({\\n            amount: msg.value,\\n            donorName: donorName,\\n            message: message,\\n            time: block.timestamp,\\n            donorAddress: msg.sender\\n        }));\\n        \\n        emit DonationReceived(projectId, msg.sender, msg.value);\\n    }\\n\\n    /**\\n     * @dev Withdraw funds (only NGO or owner)\\n     */\\n    function withdrawFunds(uint256 projectId) external {\\n        Project storage project = projects[projectId];\\n        \\n        if (project.id == 0) revert ProjectNotFound();\\n        if (msg.sender != project.ngoWallet && msg.sender != owner) {\\n            revert OnlyNGOOrOwner();\\n        }\\n        \\n        uint256 balance = project.raisedAmount;\\n        if (balance == 0) revert InsufficientFunds();\\n        \\n        project.raisedAmount = 0;\\n        \\n        (bool sent,) = project.ngoWallet.call{value: balance}(\\\"\\\");\\n        require(sent, \\\"Transfer failed\\\");\\n        \\n        emit FundsWithdrawn(projectId, balance);\\n    }\\n\\n    /**\\n     * @dev Get project info\\n     */\\n    function getProject(uint256 projectId) external view returns (Project memory) {\\n        Project memory project = projects[projectId];\\n        if (project.id == 0) revert ProjectNotFound();\\n        return project;\\n    }\\n\\n    /**\\n     * @dev Get project donations\\n     */\\n    function getProjectDonations(uint256 projectId) external view returns (Donation[] memory) {\\n        if (projects[projectId].id == 0) revert ProjectNotFound();\\n        return projectDonations[projectId];\\n    }\\n\\n    /**\\n     * @dev Reject direct ETH\\n     */\\n    receive() external payable {\\n        revert InvalidArguments();\\n    }\\n}\",\"keccak256\":\"0x855913c1b1cef5a14e3fc2d7b29165bd65a26183ce3a9503b28c87abb0ba8dfb\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60806040526001805534801561001457600080fd5b50600080546001600160a01b03191633179055611485806100366000396000f3fe60806040526004361061008a5760003560e01c80638da5cb5b116100595780638da5cb5b1461014c578063bac3833914610184578063c56f3cac146101b2578063e935b7b1146101e3578063f0f3f2c8146101f957600080fd5b80630ccc9c30146100ad578063107046bd146100e3578063155dd5ee146101175780637fce7e881461013957600080fd5b366100a8576040516317dbc4cb60e21b815260040160405180910390fd5b600080fd5b3480156100b957600080fd5b506100cd6100c8366004610ea2565b610226565b6040516100da9190610f01565b60405180910390f35b3480156100ef57600080fd5b506101036100fe366004610ea2565b61040d565b6040516100da989796959493929190610faf565b34801561012357600080fd5b50610137610132366004610ea2565b61056d565b005b61013761014736600461105d565b6106ed565b34801561015857600080fd5b5060005461016c906001600160a01b031681565b6040516001600160a01b0390911681526020016100da565b34801561019057600080fd5b506101a461019f3660046110d7565b6108e1565b6040519081526020016100da565b3480156101be57600080fd5b506101d26101cd36600461116f565b610b27565b6040516100da959493929190611191565b3480156101ef57600080fd5b506101a460015481565b34801561020557600080fd5b50610219610214366004610ea2565b610c94565b6040516100da91906111df565b6000818152600260205260408120546060910361025657604051632627b46560e11b815260040160405180910390fd5b600082815260036020908152604080832080548251818502810185019093528083529193909284015b8282101561040257838290600052602060002090600502016040518060a0016040529081600082015481526020016001820180546102bc90611275565b80601f01602080910402602001604051908101604052809291908181526020018280546102e890611275565b80156103355780601f1061030a57610100808354040283529160200191610335565b820191906000526020600020905b81548152906001019060200180831161031857829003601f168201915b5050505050815260200160028201805461034e90611275565b80601f016020809104026020016040519081016040528092919081815260200182805461037a90611275565b80156103c75780601f1061039c576101008083540402835291602001916103c7565b820191906000526020600020905b8154815290600101906020018083116103aa57829003601f168201915b505050918352505060038201546020808301919091526004909201546001600160a01b0316604090910152908252600192909201910161027f565b505050509050919050565b6002602052600090815260409020805460018201805491929161042f90611275565b80601f016020809104026020016040519081016040528092919081815260200182805461045b90611275565b80156104a85780601f1061047d576101008083540402835291602001916104a8565b820191906000526020600020905b81548152906001019060200180831161048b57829003601f168201915b5050505050908060020180546104bd90611275565b80601f01602080910402602001604051908101604052809291908181526020018280546104e990611275565b80156105365780601f1061050b57610100808354040283529160200191610536565b820191906000526020600020905b81548152906001019060200180831161051957829003601f168201915b50505050600383015460048401546005850154600686015460079096015494956001600160a01b03909316949193509160ff169088565b6000818152600260205260408120805490910361059d57604051632627b46560e11b815260040160405180910390fd5b60038101546001600160a01b031633148015906105c557506000546001600160a01b03163314155b156105e35760405163b9e99ab360e01b815260040160405180910390fd5b6005810154600081900361060a5760405163356680b760e01b815260040160405180910390fd5b60006005830181905560038301546040516001600160a01b039091169083908381818185875af1925050503d8060008114610661576040519150601f19603f3d011682016040523d82523d6000602084013e610666565b606091505b50509050806106ad5760405162461bcd60e51b815260206004820152600f60248201526e151c985b9cd9995c8819985a5b1959608a1b604482015260640160405180910390fd5b837fd66662c0ded9e58fd31d5e44944bcfd07ffc15e6927ecc1382e7941cb7bd24c4836040516106df91815260200190565b60405180910390a250505050565b6000858152600260205260408120805490910361071d57604051632627b46560e11b815260040160405180910390fd5b600681015460ff16610742576040516317dbc4cb60e21b815260040160405180910390fd5b346000036107635760405163356680b760e01b815260040160405180910390fd5b3481600501600082825461077791906112c5565b92505081905550600360008781526020019081526020016000206040518060a0016040528034815260200187878080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250505090825250604080516020601f8801819004810282018101909252868152918101919087908790819084018382808284376000920182905250938552505042602080850191909152336040909401939093525083546001818101865594825290829020835160059092020190815590820151919290919082019061085a908261133d565b506040820151600282019061086f908261133d565b5060608201516003820155608090910151600490910180546001600160a01b0319166001600160a01b03909216919091179055604051348152339087907f0b5b4c52969ff7329ecf7ee536409fda87812b15a8622bc6e8cdeab3aee14a269060200160405180910390a3505050505050565b600080546001600160a01b0316331461090d57604051635fc483c560e01b815260040160405180910390fd5b600086900361092f576040516317dbc4cb60e21b815260040160405180910390fd5b6001600160a01b038316610956576040516317dbc4cb60e21b815260040160405180910390fd5b81600003610977576040516317dbc4cb60e21b815260040160405180910390fd5b6001805460009182610988836113fd565b91905055905060405180610100016040528082815260200189898080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250505090825250604080516020601f8a018190048102820181019092528881529181019190899089908190840183828082843760009201829052509385525050506001600160a01b0387166020808401919091526040808401889052606084018390526001608085018190524260a0909501949094528583526002825290912083518155908301519091820190610a69908261133d565b5060408201516002820190610a7e908261133d565b5060608201516003820180546001600160a01b0319166001600160a01b039283161790556080830151600483015560a0830151600583015560c083015160068301805460ff191691151591909117905560e0909201516007909101556040519085169082907fa026ee65bff24e0219543a4cec2746ef952b145e2658ac5db36953d7044712a990610b14908c908c908990611416565b60405180910390a3979650505050505050565b60036020528160005260406000208181548110610b4357600080fd5b906000526020600020906005020160009150915050806000015490806001018054610b6d90611275565b80601f0160208091040260200160405190810160405280929190818152602001828054610b9990611275565b8015610be65780601f10610bbb57610100808354040283529160200191610be6565b820191906000526020600020905b815481529060010190602001808311610bc957829003601f168201915b505050505090806002018054610bfb90611275565b80601f0160208091040260200160405190810160405280929190818152602001828054610c2790611275565b8015610c745780601f10610c4957610100808354040283529160200191610c74565b820191906000526020600020905b815481529060010190602001808311610c5757829003601f168201915b5050505060038301546004909301549192916001600160a01b0316905085565b610ce760405180610100016040528060008152602001606081526020016060815260200160006001600160a01b031681526020016000815260200160008152602001600015158152602001600081525090565b6000600260008481526020019081526020016000206040518061010001604052908160008201548152602001600182018054610d2290611275565b80601f0160208091040260200160405190810160405280929190818152602001828054610d4e90611275565b8015610d9b5780601f10610d7057610100808354040283529160200191610d9b565b820191906000526020600020905b815481529060010190602001808311610d7e57829003601f168201915b50505050508152602001600282018054610db490611275565b80601f0160208091040260200160405190810160405280929190818152602001828054610de090611275565b8015610e2d5780601f10610e0257610100808354040283529160200191610e2d565b820191906000526020600020905b815481529060010190602001808311610e1057829003601f168201915b505050918352505060038201546001600160a01b031660208201526004820154604082015260058201546060820152600682015460ff161515608082015260079091015460a0909101528051909150600003610e9c57604051632627b46560e11b815260040160405180910390fd5b92915050565b600060208284031215610eb457600080fd5b5035919050565b6000815180845260005b81811015610ee157602081850181015186830182015201610ec5565b506000602082860101526020601f19601f83011685010191505092915050565b60006020808301818452808551808352604092508286019150828160051b87010184880160005b83811015610fa157603f19898403018552815160a08151855288820151818a870152610f5682870182610ebb565b9150508782015185820389870152610f6e8282610ebb565b606084810151908801526080938401516001600160a01b0316939096019290925250509386019390860190600101610f28565b509098975050505050505050565b60006101008a8352806020840152610fc98184018b610ebb565b90508281036040840152610fdd818a610ebb565b6001600160a01b039890981660608401525050608081019490945260a0840192909252151560c083015260e0909101529392505050565b60008083601f84011261102657600080fd5b50813567ffffffffffffffff81111561103e57600080fd5b60208301915083602082850101111561105657600080fd5b9250929050565b60008060008060006060868803121561107557600080fd5b85359450602086013567ffffffffffffffff8082111561109457600080fd5b6110a089838a01611014565b909650945060408801359150808211156110b957600080fd5b506110c688828901611014565b969995985093965092949392505050565b600080600080600080608087890312156110f057600080fd5b863567ffffffffffffffff8082111561110857600080fd5b6111148a838b01611014565b9098509650602089013591508082111561112d57600080fd5b5061113a89828a01611014565b90955093505060408701356001600160a01b038116811461115a57600080fd5b80925050606087013590509295509295509295565b6000806040838503121561118257600080fd5b50508035926020909101359150565b85815260a0602082015260006111aa60a0830187610ebb565b82810360408401526111bc8187610ebb565b606084019590955250506001600160a01b03919091166080909101529392505050565b602081528151602082015260006020830151610100806040850152611208610120850183610ebb565b91506040850151601f198584030160608601526112258382610ebb565b92505060018060a01b036060860151166080850152608085015160a085015260a085015160c085015260c085015161126160e086018215159052565b5060e0949094015192909301919091525090565b600181811c9082168061128957607f821691505b6020821081036112a957634e487b7160e01b600052602260045260246000fd5b50919050565b634e487b7160e01b600052601160045260246000fd5b80820180821115610e9c57610e9c6112af565b634e487b7160e01b600052604160045260246000fd5b601f82111561133857600081815260208120601f850160051c810160208610156113155750805b601f850160051c820191505b8181101561133457828155600101611321565b5050505b505050565b815167ffffffffffffffff811115611357576113576112d8565b61136b816113658454611275565b846112ee565b602080601f8311600181146113a057600084156113885750858301515b600019600386901b1c1916600185901b178555611334565b600085815260208120601f198616915b828110156113cf578886015182559484019460019091019084016113b0565b50858210156113ed5787850151600019600388901b60f8161c191681555b5050505050600190811b01905550565b60006001820161140f5761140f6112af565b5060010190565b604081528260408201528284606083013760006060848301015260006060601f19601f860116830101905082602083015294935050505056fea2646970667358221220bf82f47a26466c66a2fbeb8497e4ec3c70b3809f812e104829f28dca4a7dc90064736f6c63430008110033",
+  "deployedBytecode": "0x60806040526004361061008a5760003560e01c80638da5cb5b116100595780638da5cb5b1461014c578063bac3833914610184578063c56f3cac146101b2578063e935b7b1146101e3578063f0f3f2c8146101f957600080fd5b80630ccc9c30146100ad578063107046bd146100e3578063155dd5ee146101175780637fce7e881461013957600080fd5b366100a8576040516317dbc4cb60e21b815260040160405180910390fd5b600080fd5b3480156100b957600080fd5b506100cd6100c8366004610ea2565b610226565b6040516100da9190610f01565b60405180910390f35b3480156100ef57600080fd5b506101036100fe366004610ea2565b61040d565b6040516100da989796959493929190610faf565b34801561012357600080fd5b50610137610132366004610ea2565b61056d565b005b61013761014736600461105d565b6106ed565b34801561015857600080fd5b5060005461016c906001600160a01b031681565b6040516001600160a01b0390911681526020016100da565b34801561019057600080fd5b506101a461019f3660046110d7565b6108e1565b6040519081526020016100da565b3480156101be57600080fd5b506101d26101cd36600461116f565b610b27565b6040516100da959493929190611191565b3480156101ef57600080fd5b506101a460015481565b34801561020557600080fd5b50610219610214366004610ea2565b610c94565b6040516100da91906111df565b6000818152600260205260408120546060910361025657604051632627b46560e11b815260040160405180910390fd5b600082815260036020908152604080832080548251818502810185019093528083529193909284015b8282101561040257838290600052602060002090600502016040518060a0016040529081600082015481526020016001820180546102bc90611275565b80601f01602080910402602001604051908101604052809291908181526020018280546102e890611275565b80156103355780601f1061030a57610100808354040283529160200191610335565b820191906000526020600020905b81548152906001019060200180831161031857829003601f168201915b5050505050815260200160028201805461034e90611275565b80601f016020809104026020016040519081016040528092919081815260200182805461037a90611275565b80156103c75780601f1061039c576101008083540402835291602001916103c7565b820191906000526020600020905b8154815290600101906020018083116103aa57829003601f168201915b505050918352505060038201546020808301919091526004909201546001600160a01b0316604090910152908252600192909201910161027f565b505050509050919050565b6002602052600090815260409020805460018201805491929161042f90611275565b80601f016020809104026020016040519081016040528092919081815260200182805461045b90611275565b80156104a85780601f1061047d576101008083540402835291602001916104a8565b820191906000526020600020905b81548152906001019060200180831161048b57829003601f168201915b5050505050908060020180546104bd90611275565b80601f01602080910402602001604051908101604052809291908181526020018280546104e990611275565b80156105365780601f1061050b57610100808354040283529160200191610536565b820191906000526020600020905b81548152906001019060200180831161051957829003601f168201915b50505050600383015460048401546005850154600686015460079096015494956001600160a01b03909316949193509160ff169088565b6000818152600260205260408120805490910361059d57604051632627b46560e11b815260040160405180910390fd5b60038101546001600160a01b031633148015906105c557506000546001600160a01b03163314155b156105e35760405163b9e99ab360e01b815260040160405180910390fd5b6005810154600081900361060a5760405163356680b760e01b815260040160405180910390fd5b60006005830181905560038301546040516001600160a01b039091169083908381818185875af1925050503d8060008114610661576040519150601f19603f3d011682016040523d82523d6000602084013e610666565b606091505b50509050806106ad5760405162461bcd60e51b815260206004820152600f60248201526e151c985b9cd9995c8819985a5b1959608a1b604482015260640160405180910390fd5b837fd66662c0ded9e58fd31d5e44944bcfd07ffc15e6927ecc1382e7941cb7bd24c4836040516106df91815260200190565b60405180910390a250505050565b6000858152600260205260408120805490910361071d57604051632627b46560e11b815260040160405180910390fd5b600681015460ff16610742576040516317dbc4cb60e21b815260040160405180910390fd5b346000036107635760405163356680b760e01b815260040160405180910390fd5b3481600501600082825461077791906112c5565b92505081905550600360008781526020019081526020016000206040518060a0016040528034815260200187878080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250505090825250604080516020601f8801819004810282018101909252868152918101919087908790819084018382808284376000920182905250938552505042602080850191909152336040909401939093525083546001818101865594825290829020835160059092020190815590820151919290919082019061085a908261133d565b506040820151600282019061086f908261133d565b5060608201516003820155608090910151600490910180546001600160a01b0319166001600160a01b03909216919091179055604051348152339087907f0b5b4c52969ff7329ecf7ee536409fda87812b15a8622bc6e8cdeab3aee14a269060200160405180910390a3505050505050565b600080546001600160a01b0316331461090d57604051635fc483c560e01b815260040160405180910390fd5b600086900361092f576040516317dbc4cb60e21b815260040160405180910390fd5b6001600160a01b038316610956576040516317dbc4cb60e21b815260040160405180910390fd5b81600003610977576040516317dbc4cb60e21b815260040160405180910390fd5b6001805460009182610988836113fd565b91905055905060405180610100016040528082815260200189898080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250505090825250604080516020601f8a018190048102820181019092528881529181019190899089908190840183828082843760009201829052509385525050506001600160a01b0387166020808401919091526040808401889052606084018390526001608085018190524260a0909501949094528583526002825290912083518155908301519091820190610a69908261133d565b5060408201516002820190610a7e908261133d565b5060608201516003820180546001600160a01b0319166001600160a01b039283161790556080830151600483015560a0830151600583015560c083015160068301805460ff191691151591909117905560e0909201516007909101556040519085169082907fa026ee65bff24e0219543a4cec2746ef952b145e2658ac5db36953d7044712a990610b14908c908c908990611416565b60405180910390a3979650505050505050565b60036020528160005260406000208181548110610b4357600080fd5b906000526020600020906005020160009150915050806000015490806001018054610b6d90611275565b80601f0160208091040260200160405190810160405280929190818152602001828054610b9990611275565b8015610be65780601f10610bbb57610100808354040283529160200191610be6565b820191906000526020600020905b815481529060010190602001808311610bc957829003601f168201915b505050505090806002018054610bfb90611275565b80601f0160208091040260200160405190810160405280929190818152602001828054610c2790611275565b8015610c745780601f10610c4957610100808354040283529160200191610c74565b820191906000526020600020905b815481529060010190602001808311610c5757829003601f168201915b5050505060038301546004909301549192916001600160a01b0316905085565b610ce760405180610100016040528060008152602001606081526020016060815260200160006001600160a01b031681526020016000815260200160008152602001600015158152602001600081525090565b6000600260008481526020019081526020016000206040518061010001604052908160008201548152602001600182018054610d2290611275565b80601f0160208091040260200160405190810160405280929190818152602001828054610d4e90611275565b8015610d9b5780601f10610d7057610100808354040283529160200191610d9b565b820191906000526020600020905b815481529060010190602001808311610d7e57829003601f168201915b50505050508152602001600282018054610db490611275565b80601f0160208091040260200160405190810160405280929190818152602001828054610de090611275565b8015610e2d5780601f10610e0257610100808354040283529160200191610e2d565b820191906000526020600020905b815481529060010190602001808311610e1057829003601f168201915b505050918352505060038201546001600160a01b031660208201526004820154604082015260058201546060820152600682015460ff161515608082015260079091015460a0909101528051909150600003610e9c57604051632627b46560e11b815260040160405180910390fd5b92915050565b600060208284031215610eb457600080fd5b5035919050565b6000815180845260005b81811015610ee157602081850181015186830182015201610ec5565b506000602082860101526020601f19601f83011685010191505092915050565b60006020808301818452808551808352604092508286019150828160051b87010184880160005b83811015610fa157603f19898403018552815160a08151855288820151818a870152610f5682870182610ebb565b9150508782015185820389870152610f6e8282610ebb565b606084810151908801526080938401516001600160a01b0316939096019290925250509386019390860190600101610f28565b509098975050505050505050565b60006101008a8352806020840152610fc98184018b610ebb565b90508281036040840152610fdd818a610ebb565b6001600160a01b039890981660608401525050608081019490945260a0840192909252151560c083015260e0909101529392505050565b60008083601f84011261102657600080fd5b50813567ffffffffffffffff81111561103e57600080fd5b60208301915083602082850101111561105657600080fd5b9250929050565b60008060008060006060868803121561107557600080fd5b85359450602086013567ffffffffffffffff8082111561109457600080fd5b6110a089838a01611014565b909650945060408801359150808211156110b957600080fd5b506110c688828901611014565b969995985093965092949392505050565b600080600080600080608087890312156110f057600080fd5b863567ffffffffffffffff8082111561110857600080fd5b6111148a838b01611014565b9098509650602089013591508082111561112d57600080fd5b5061113a89828a01611014565b90955093505060408701356001600160a01b038116811461115a57600080fd5b80925050606087013590509295509295509295565b6000806040838503121561118257600080fd5b50508035926020909101359150565b85815260a0602082015260006111aa60a0830187610ebb565b82810360408401526111bc8187610ebb565b606084019590955250506001600160a01b03919091166080909101529392505050565b602081528151602082015260006020830151610100806040850152611208610120850183610ebb565b91506040850151601f198584030160608601526112258382610ebb565b92505060018060a01b036060860151166080850152608085015160a085015260a085015160c085015260c085015161126160e086018215159052565b5060e0949094015192909301919091525090565b600181811c9082168061128957607f821691505b6020821081036112a957634e487b7160e01b600052602260045260246000fd5b50919050565b634e487b7160e01b600052601160045260246000fd5b80820180821115610e9c57610e9c6112af565b634e487b7160e01b600052604160045260246000fd5b601f82111561133857600081815260208120601f850160051c810160208610156113155750805b601f850160051c820191505b8181101561133457828155600101611321565b5050505b505050565b815167ffffffffffffffff811115611357576113576112d8565b61136b816113658454611275565b846112ee565b602080601f8311600181146113a057600084156113885750858301515b600019600386901b1c1916600185901b178555611334565b600085815260208120601f198616915b828110156113cf578886015182559484019460019091019084016113b0565b50858210156113ed5787850151600019600388901b60f8161c191681555b5050505050600190811b01905550565b60006001820161140f5761140f6112af565b5060010190565b604081528260408201528284606083013760006060848301015260006060601f19601f860116830101905082602083015294935050505056fea2646970667358221220bf82f47a26466c66a2fbeb8497e4ec3c70b3809f812e104829f28dca4a7dc90064736f6c63430008110033",
+  "devdoc": {
+    "details": "Minimal contract for NGO project donations",
+    "kind": "dev",
+    "methods": {
+      "createProject(string,string,address,uint256)": {
+        "details": "Create project (only owner)"
+      },
+      "donateToProject(uint256,string,string)": {
+        "details": "Donate to project"
+      },
+      "getProject(uint256)": {
+        "details": "Get project info"
+      },
+      "getProjectDonations(uint256)": {
+        "details": "Get project donations"
+      },
+      "withdrawFunds(uint256)": {
+        "details": "Withdraw funds (only NGO or owner)"
+      }
+    },
+    "title": "NGODonations - Ultra Optimized Version",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 32,
+        "contract": "contracts/Donations.sol:NGODonations",
+        "label": "owner",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address_payable"
+      },
+      {
+        "astId": 35,
+        "contract": "contracts/Donations.sol:NGODonations",
+        "label": "nextProjectId",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 40,
+        "contract": "contracts/Donations.sol:NGODonations",
+        "label": "projects",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_mapping(t_uint256,t_struct(Project)29_storage)"
+      },
+      {
+        "astId": 46,
+        "contract": "contracts/Donations.sol:NGODonations",
+        "label": "projectDonations",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_mapping(t_uint256,t_array(t_struct(Donation)12_storage)dyn_storage)"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_address_payable": {
+        "encoding": "inplace",
+        "label": "address payable",
+        "numberOfBytes": "20"
+      },
+      "t_array(t_struct(Donation)12_storage)dyn_storage": {
+        "base": "t_struct(Donation)12_storage",
+        "encoding": "dynamic_array",
+        "label": "struct Donation[]",
+        "numberOfBytes": "32"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_mapping(t_uint256,t_array(t_struct(Donation)12_storage)dyn_storage)": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => struct Donation[])",
+        "numberOfBytes": "32",
+        "value": "t_array(t_struct(Donation)12_storage)dyn_storage"
+      },
+      "t_mapping(t_uint256,t_struct(Project)29_storage)": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => struct Project)",
+        "numberOfBytes": "32",
+        "value": "t_struct(Project)29_storage"
+      },
+      "t_string_storage": {
+        "encoding": "bytes",
+        "label": "string",
+        "numberOfBytes": "32"
+      },
+      "t_struct(Donation)12_storage": {
+        "encoding": "inplace",
+        "label": "struct Donation",
+        "members": [
+          {
+            "astId": 3,
+            "contract": "contracts/Donations.sol:NGODonations",
+            "label": "amount",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 5,
+            "contract": "contracts/Donations.sol:NGODonations",
+            "label": "donorName",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 7,
+            "contract": "contracts/Donations.sol:NGODonations",
+            "label": "message",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 9,
+            "contract": "contracts/Donations.sol:NGODonations",
+            "label": "time",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 11,
+            "contract": "contracts/Donations.sol:NGODonations",
+            "label": "donorAddress",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_address"
+          }
+        ],
+        "numberOfBytes": "160"
+      },
+      "t_struct(Project)29_storage": {
+        "encoding": "inplace",
+        "label": "struct Project",
+        "members": [
+          {
+            "astId": 14,
+            "contract": "contracts/Donations.sol:NGODonations",
+            "label": "id",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 16,
+            "contract": "contracts/Donations.sol:NGODonations",
+            "label": "projectName",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 18,
+            "contract": "contracts/Donations.sol:NGODonations",
+            "label": "ngoName",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 20,
+            "contract": "contracts/Donations.sol:NGODonations",
+            "label": "ngoWallet",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_address_payable"
+          },
+          {
+            "astId": 22,
+            "contract": "contracts/Donations.sol:NGODonations",
+            "label": "targetAmount",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 24,
+            "contract": "contracts/Donations.sol:NGODonations",
+            "label": "raisedAmount",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 26,
+            "contract": "contracts/Donations.sol:NGODonations",
+            "label": "active",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_bool"
+          },
+          {
+            "astId": 28,
+            "contract": "contracts/Donations.sol:NGODonations",
+            "label": "createdAt",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_uint256"
+          }
+        ],
+        "numberOfBytes": "256"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}
