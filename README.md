@@ -113,3 +113,24 @@ To add Foundry to Scaffold-Lisk, follow this simple [tutorial](https://hardhat.o
 We highly recommend visiting the original [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
 
 To know more about its features, check out their [website](https://scaffoldeth.io).
+
+
+## GENERAR DATOS FAKE EN DB
+¿Qué genera?
+  - 20 usuarios con wallets blockchain
+  - 8 organizaciones ambientales
+  - 15 proyectos de diferentes tipos (reforestación, biodiversidad, etc.)
+  - 50 donaciones con montos realistas
+  - 100 árboles con metadata de especies
+  - 10 suscripciones recurrentes
+  - Smart contracts vinculados a donaciones
+  - Membresías comunitarias y encuestas
+
+  Para usar:
+  cd packages/nextjs
+  yarn install  # Instalar @faker-js/faker
+  yarn seed reset  # Limpiar y generar datos
+  yarn seed seed   # Solo generar
+  yarn seed clear  # Solo limpiar
+
+  Los datos incluyen relaciones correctas entre modelos y valores realistas para el contexto ambiental.
