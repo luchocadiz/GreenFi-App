@@ -1,0 +1,35 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/ProposalRegistry.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.17;\n\ncontract ProposalRegistry {\n    struct Proposal {\n        string title;\n        string description;\n        address proposer;\n    }\n\n    Proposal[] public proposals;\n\n    event ProposalCreated(\n        uint indexed id,\n        address indexed proposer,\n        string title\n    );\n\n    function createProposal(\n        string calldata title,\n        string calldata description\n    ) external {\n        proposals.push(\n            Proposal({\n                title: title,\n                description: description,\n                proposer: msg.sender\n            })\n        );\n        emit ProposalCreated(proposals.length - 1, msg.sender, title);\n    }\n\n    function getAllProposals() external view returns (Proposal[] memory) {\n        return proposals;\n    }\n\n    function getProposalCount() external view returns (uint) {\n        return proposals.length;\n    }\n}"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
