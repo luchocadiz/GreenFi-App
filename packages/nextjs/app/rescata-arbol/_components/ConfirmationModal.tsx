@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { DonationData } from "../_types";
 
 interface ConfirmationModalProps {
@@ -9,11 +9,7 @@ interface ConfirmationModalProps {
   onClose: () => void;
 }
 
-export const ConfirmationModal = ({ 
-  donationData, 
-  isOpen, 
-  onClose 
-}: ConfirmationModalProps) => {
+export const ConfirmationModal = ({ donationData, isOpen, onClose }: ConfirmationModalProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [showNFT, setShowNFT] = useState(false);
 
@@ -21,7 +17,7 @@ export const ConfirmationModal = ({
     if (isOpen) {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 3000);
-      
+
       setTimeout(() => setShowNFT(true), 1000);
     }
   }, [isOpen]);
@@ -30,13 +26,13 @@ export const ConfirmationModal = ({
 
   const handleViewBlockchain = () => {
     // En producción, esto abriría el explorer de Lisk
-    window.open(`https://sepolia-blockscout.lisk.com/tx/${donationData.transactionHash}`, '_blank');
+    window.open(`https://sepolia-blockscout.lisk.com/tx/${donationData.transactionHash}`, "_blank");
   };
 
   const handleViewFilecoin = () => {
     // En producción, esto abriría el explorer de Filecoin
     if (donationData.filecoinCid) {
-      window.open(`https://filfox.info/en/ipfs/${donationData.filecoinCid}`, '_blank');
+      window.open(`https://filfox.info/en/ipfs/${donationData.filecoinCid}`, "_blank");
     }
   };
 
@@ -54,10 +50,10 @@ export const ConfirmationModal = ({
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * 100}%`,
                   animationDelay: `${Math.random() * 2}s`,
-                  animationDuration: `${1 + Math.random() * 2}s`
+                  animationDuration: `${1 + Math.random() * 2}s`,
                 }}
               >
-                {['🎉', '🎊', '✨', '🌟', '💫'][Math.floor(Math.random() * 5)]}
+                {["🎉", "🎊", "✨", "🌟", "💫"][Math.floor(Math.random() * 5)]}
               </div>
             ))}
           </div>
@@ -66,9 +62,7 @@ export const ConfirmationModal = ({
         {/* Header */}
         <div className="p-6 border-b border-gray-100 text-center">
           <div className="text-6xl mb-4 animate-bounce">🎉</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            ¡Gracias por tu donación!
-          </h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">¡Gracias por tu donación!</h2>
           <p className="text-gray-600">
             Has ayudado a rescatar un <span className="font-semibold text-green-600">{donationData.treeName}</span> 🌳
           </p>
@@ -90,9 +84,7 @@ export const ConfirmationModal = ({
               </div>
               <div className="flex justify-between">
                 <span className="text-green-700">Método de pago:</span>
-                <span className="font-medium">
-                  {donationData.paymentMethod === 'card' ? '💳 Tarjeta' : '📱 QR'}
-                </span>
+                <span className="font-medium">{donationData.paymentMethod === "card" ? "💳 Tarjeta" : "📱 QR"}</span>
               </div>
             </div>
           </div>
@@ -103,9 +95,7 @@ export const ConfirmationModal = ({
               <div className="text-center">
                 <div className="text-4xl mb-2">🏆</div>
                 <h4 className="font-semibold text-purple-800 mb-2">¡Logro Desbloqueado!</h4>
-                <p className="text-sm text-purple-600 mb-3">
-                  "Rescatador de {donationData.treeName}"
-                </p>
+                <p className="text-sm text-purple-600 mb-3">&ldquo;Rescatador de {donationData.treeName}&rdquo;</p>
                 <div className="bg-white rounded-lg p-3 inline-block">
                   <div className="text-2xl">🌱</div>
                   <div className="text-xs text-gray-600">NFT de Logro</div>
@@ -123,7 +113,7 @@ export const ConfirmationModal = ({
               <span>🔗</span>
               <span>Ver transacción en Lisk Explorer</span>
             </button>
-            
+
             {donationData.filecoinCid && (
               <button
                 onClick={handleViewFilecoin}
@@ -140,12 +130,10 @@ export const ConfirmationModal = ({
             <div className="flex items-start space-x-3">
               <div className="text-blue-600 text-lg">🌐</div>
               <div>
-                <p className="text-sm text-blue-800 font-medium">
-                  Transparencia Garantizada
-                </p>
+                <p className="text-sm text-blue-800 font-medium">Transparencia Garantizada</p>
                 <p className="text-xs text-blue-600 mt-1">
-                  Tu donación está registrada en blockchain y es completamente verificable. 
-                  Los fondos se destinan directamente a la conservación del árbol.
+                  Tu donación está registrada en blockchain y es completamente verificable. Los fondos se destinan
+                  directamente a la conservación del árbol.
                 </p>
               </div>
             </div>
@@ -156,12 +144,10 @@ export const ConfirmationModal = ({
             <div className="flex items-center space-x-3">
               <div className="text-emerald-600 text-2xl">🌍</div>
               <div>
-                <p className="text-sm text-emerald-800 font-medium">
-                  Impacto Ambiental
-                </p>
+                <p className="text-sm text-emerald-800 font-medium">Impacto Ambiental</p>
                 <p className="text-xs text-emerald-600 mt-1">
-                  Con tu donación, contribuís a la captura de CO2 y la preservación 
-                  de la biodiversidad local. ¡Cada árbol cuenta!
+                  Con tu donación, contribuís a la captura de CO2 y la preservación de la biodiversidad local. ¡Cada
+                  árbol cuenta!
                 </p>
               </div>
             </div>
@@ -177,12 +163,8 @@ export const ConfirmationModal = ({
 
           {/* Información adicional */}
           <div className="text-center">
-            <p className="text-xs text-gray-500 mb-2">
-              Recibirás un email con el comprobante de tu donación
-            </p>
-            <p className="text-xs text-gray-400">
-              💚 Gracias por hacer del mundo un lugar mejor
-            </p>
+            <p className="text-xs text-gray-500 mb-2">Recibirás un email con el comprobante de tu donación</p>
+            <p className="text-xs text-gray-400">💚 Gracias por hacer del mundo un lugar mejor</p>
           </div>
         </div>
       </div>

@@ -1,15 +1,15 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Logo } from "~~/components/Logo";
+import RedirectToLogin from "~~/components/RedirectToLogin";
 import { Address } from "~~/components/scaffold-eth";
 import { useAuth } from "~~/hooks/useAuth";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import RedirectToLogin from "~~/components/RedirectToLogin";
 
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();

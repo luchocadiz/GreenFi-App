@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Logo } from "~~/components/Logo";
 import { useAuth } from "~~/hooks/useAuth";
 
 export const Header = () => {
@@ -22,26 +21,23 @@ export const Header = () => {
 
           {/* Navegación */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link 
-              href="/rescata-arbol" 
-              className="text-gray-700 hover:text-green-600 transition-colors font-medium"
-            >
+            <Link href="/rescata-arbol" className="text-gray-700 hover:text-green-600 transition-colors font-medium">
               Inicio
             </Link>
-            <Link 
-              href="/rescata-arbol#trees" 
+            <Link
+              href="/rescata-arbol#trees"
               className="text-gray-700 hover:text-green-600 transition-colors font-medium"
             >
               Árboles
             </Link>
-            <Link 
-              href="/rescata-arbol#impact" 
+            <Link
+              href="/rescata-arbol#impact"
               className="text-gray-700 hover:text-green-600 transition-colors font-medium"
             >
               Impacto
             </Link>
-            <Link 
-              href="/rescata-arbol#about" 
+            <Link
+              href="/rescata-arbol#about"
               className="text-gray-700 hover:text-green-600 transition-colors font-medium"
             >
               Nosotros
@@ -53,9 +49,7 @@ export const Header = () => {
             {isAuthenticated ? (
               <div className="flex items-center space-x-3">
                 <div className="text-right">
-                  <div className="text-sm font-medium text-gray-800">
-                    Conectado a Lisk
-                  </div>
+                  <div className="text-sm font-medium text-gray-800">Conectado a Lisk</div>
                   <div className="text-xs text-gray-500">
                     {userAddress?.slice(0, 6)}...{userAddress?.slice(-4)}
                   </div>
@@ -63,14 +57,12 @@ export const Header = () => {
                 <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
               </div>
             ) : (
-              <div className="text-sm text-gray-500">
-                No conectado
-              </div>
+              <div className="text-sm text-gray-500">No conectado</div>
             )}
-            
+
             {/* Botón de Volver */}
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
             >
               Volver al App

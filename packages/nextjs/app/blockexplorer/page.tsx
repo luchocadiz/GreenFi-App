@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { PaginationButton, SearchBar, TransactionsTable } from "./_components";
 import type { NextPage } from "next";
 import { hardhat } from "viem/chains";
+import AuthGuard from "~~/components/AuthGuard";
 import { useFetchBlocks } from "~~/hooks/scaffold-eth";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 import { notification } from "~~/utils/scaffold-eth";
-import AuthGuard from "~~/components/AuthGuard";
 
 const BlockExplorer: NextPage = () => {
   const { blocks, transactionReceipts, currentPage, totalBlocks, setCurrentPage, error } = useFetchBlocks();

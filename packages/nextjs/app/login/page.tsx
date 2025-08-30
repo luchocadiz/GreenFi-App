@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useAccount, useConnect, useDisconnect, useNetwork, useSwitchNetwork } from "wagmi";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
+import { useAccount, useConnect, useDisconnect, useNetwork, useSwitchNetwork } from "wagmi";
 
 const LoginPage = () => {
   const [isConnecting, setIsConnecting] = useState(false);
@@ -31,11 +31,11 @@ const LoginPage = () => {
 
   const handleConnect = async () => {
     setIsConnecting(true);
-    
+
     try {
       // Buscar el conector de MetaMask
       const metaMaskConnector = connectors.find(connector => connector.id === "metaMask");
-      
+
       if (!metaMaskConnector) {
         toast.error("MetaMask no está disponible");
         return;
@@ -43,7 +43,6 @@ const LoginPage = () => {
 
       // Conectar a MetaMask
       await connect({ connector: metaMaskConnector });
-      
     } catch (error) {
       console.error("Error al conectar:", error);
       toast.error("Error al conectar con MetaMask");
@@ -72,6 +71,11 @@ const LoginPage = () => {
 
   const addLiskSepoliaToMetaMask = async () => {
     try {
+      if (!window.ethereum) {
+        toast.error("MetaMask no está disponible");
+        return;
+      }
+
       await window.ethereum.request({
         method: "wallet_addEthereumChain",
         params: [
@@ -158,8 +162,7 @@ const LoginPage = () => {
                   <span className="font-semibold">Red incorrecta</span>
                 </div>
                 <p className="text-sm text-gray-300 mb-3">
-                  Estás conectado a {chain?.name || "una red desconocida"}. 
-                  Necesitas cambiar a Lisk Sepolia.
+                  Estás conectado a {chain?.name || "una red desconocida"}. Necesitas cambiar a Lisk Sepolia.
                 </p>
                 <button
                   onClick={handleSwitchToLiskSepolia}
@@ -174,9 +177,7 @@ const LoginPage = () => {
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                   <span className="font-semibold">Red correcta</span>
                 </div>
-                <p className="text-sm text-gray-300">
-                  Estás conectado a Lisk Sepolia Testnet
-                </p>
+                <p className="text-sm text-gray-300">Estás conectado a Lisk Sepolia Testnet</p>
               </div>
             )}
 
@@ -192,9 +193,7 @@ const LoginPage = () => {
         {isAuthenticated && (
           <div className="mt-6 text-center">
             <div className="animate-pulse">
-              <p className="text-green-400 font-semibold">
-                ¡Autenticación exitosa! Redirigiendo...
-              </p>
+              <p className="text-green-400 font-semibold">¡Autenticación exitosa! Redirigiendo...</p>
             </div>
           </div>
         )}

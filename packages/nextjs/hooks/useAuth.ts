@@ -1,5 +1,5 @@
-import { useAccount, useNetwork } from "wagmi";
 import { useMemo } from "react";
+import { useAccount, useNetwork } from "wagmi";
 
 export const useAuth = () => {
   const { address, isConnected } = useAccount();

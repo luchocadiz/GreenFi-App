@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useAccount, useNetwork } from "wagmi";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
+import { useAccount, useNetwork } from "wagmi";
 
 interface AuthGuardProps {
   children: React.ReactNode;

@@ -103,16 +103,16 @@ const ProtectedPage = () => {
 Para páginas que redirijan automáticamente al login:
 
 ```tsx
-import { useAuth } from "~~/hooks/useAuth";
 import RedirectToLogin from "~~/components/RedirectToLogin";
+import { useAuth } from "~~/hooks/useAuth";
 
 const ProtectedPage = () => {
   const { isAuthenticated } = useAuth();
-  
+
   if (!isAuthenticated) {
     return <RedirectToLogin />;
   }
-  
+
   return <div>Contenido protegido</div>;
 };
 ```
@@ -129,6 +129,7 @@ const ProtectedPage = () => {
 ### Colores y Temas
 
 El sistema usa un esquema de colores basado en gradientes:
+
 - **Verde a Azul**: Botones principales
 - **Púrpura a Rosa**: Botones secundarios
 - **Verde**: Estados de éxito
@@ -138,6 +139,7 @@ El sistema usa un esquema de colores basado en gradientes:
 ### Estilos
 
 Los estilos están basados en Tailwind CSS con clases personalizadas para:
+
 - Gradientes de fondo
 - Efectos de glassmorphism
 - Animaciones y transiciones

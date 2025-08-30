@@ -1,17 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { useDisconnect, useSwitchNetwork } from "wagmi";
 import { useRouter } from "next/navigation";
-import { useAuth } from "~~/hooks/useAuth";
 import { toast } from "react-hot-toast";
+import { useDisconnect, useSwitchNetwork } from "wagmi";
+import { useAuth } from "~~/hooks/useAuth";
 
 const AuthButton = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { disconnect } = useDisconnect();
   const { switchNetwork } = useSwitchNetwork();
   const router = useRouter();
-  const { isAuthenticated, isConnected, isCorrectNetwork, userAddress, networkName } = useAuth();
+  const { isConnected, isCorrectNetwork, userAddress, networkName } = useAuth();
 
   // Lisk Sepolia chain ID
   const LISK_SEPOLIA_CHAIN_ID = 4202;
@@ -54,9 +54,7 @@ const AuthButton = () => {
   if (!isCorrectNetwork) {
     return (
       <div className="flex items-center space-x-2">
-        <span className="text-yellow-400 text-sm">
-          {networkName}
-        </span>
+        <span className="text-yellow-400 text-sm">{networkName}</span>
         <button
           onClick={handleSwitchNetwork}
           disabled={isLoading}

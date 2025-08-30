@@ -1,7 +1,7 @@
 "use client";
 
-import { useAuth } from "~~/hooks/useAuth";
 import AuthGuard from "~~/components/AuthGuard";
+import { useAuth } from "~~/hooks/useAuth";
 
 const DashboardPage = () => {
   const { userAddress, networkName, isAuthenticated } = useAuth();
@@ -11,12 +11,8 @@ const DashboardPage = () => {
       <div className="min-h-screen bg-gradient-to-br from-green-900 via-blue-900 to-purple-900 p-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-white mb-4">
-              🚀 Dashboard de Lisk
-            </h1>
-            <p className="text-xl text-gray-300">
-              Bienvenido a tu panel de control personalizado
-            </p>
+            <h1 className="text-4xl font-bold text-white mb-4">🚀 Dashboard de Lisk</h1>
+            <p className="text-xl text-gray-300">Bienvenido a tu panel de control personalizado</p>
           </div>
 
           {isAuthenticated && (
@@ -35,7 +31,8 @@ const DashboardPage = () => {
                     Red: <span className="text-blue-400">{networkName}</span>
                   </p>
                   <p className="text-gray-300">
-                    Dirección: <span className="text-purple-400 font-mono">
+                    Dirección:{" "}
+                    <span className="text-purple-400 font-mono">
                       {userAddress?.slice(0, 6)}...{userAddress?.slice(-4)}
                     </span>
                   </p>
@@ -118,12 +115,10 @@ const DashboardPage = () => {
           {/* Mensaje de bienvenida */}
           <div className="mt-12 text-center">
             <div className="bg-white/5 backdrop-blur-lg rounded-xl p-8 border border-white/10">
-              <h2 className="text-2xl font-semibold text-white mb-4">
-                🎉 ¡Felicidades!
-              </h2>
+              <h2 className="text-2xl font-semibold text-white mb-4">🎉 ¡Felicidades!</h2>
               <p className="text-gray-300 mb-6">
-                Has logrado conectarte exitosamente a la testnet de Lisk Sepolia. 
-                Ahora puedes explorar todas las funcionalidades de la blockchain.
+                Has logrado conectarte exitosamente a la testnet de Lisk Sepolia. Ahora puedes explorar todas las
+                funcionalidades de la blockchain.
               </p>
               <div className="flex justify-center space-x-4">
                 <button className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105">

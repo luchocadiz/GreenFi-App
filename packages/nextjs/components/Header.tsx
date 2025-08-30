@@ -3,14 +3,10 @@
 import React, { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import AuthButton from "./AuthButton";
 import { Logo } from "./Logo";
 import { Bars3Icon, BugAntIcon, HomeIcon } from "@heroicons/react/24/outline";
-import {
-  DappConsoleButton,
-  FaucetButton,
-  SuperchainFaucetButton,
-} from "~~/components/scaffold-eth";
-import AuthButton from "./AuthButton";
+import { DappConsoleButton, FaucetButton, SuperchainFaucetButton } from "~~/components/scaffold-eth";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
 import { useAuth } from "~~/hooks/useAuth";
 import { cn } from "~~/utils/cn";
@@ -84,7 +80,7 @@ export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
   const { isAuthenticated } = useAuth();
-  
+
   useOutsideClick(
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),

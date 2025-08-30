@@ -65,9 +65,7 @@ export const TreeCard = ({ tree, onRescue }: TreeCardProps) => {
           <p className="text-sm text-gray-500 mb-3">📍 {tree.location}</p>
         </div>
 
-        <p className="text-gray-700 text-sm mb-4 line-clamp-3">
-          {tree.description}
-        </p>
+        <p className="text-gray-700 text-sm mb-4 line-clamp-3">{tree.description}</p>
 
         {/* Impacto y Captura de CO2 */}
         <div className="grid grid-cols-2 gap-3 mb-4">
@@ -103,9 +101,7 @@ export const TreeCard = ({ tree, onRescue }: TreeCardProps) => {
 
         {/* Información adicional */}
         <div className="mt-4 text-center">
-          <p className="text-xs text-gray-500">
-            💚 100% transparente • 🔒 Datos protegidos • 🌍 Impacto verificable
-          </p>
+          <p className="text-xs text-gray-500">💚 100% transparente • 🔒 Datos protegidos • 🌍 Impacto verificable</p>
         </div>
       </div>
     </div>

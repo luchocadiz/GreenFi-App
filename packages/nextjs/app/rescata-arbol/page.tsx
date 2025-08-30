@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { TreeCard } from "./_components/TreeCard";
 import { CheckoutModal } from "./_components/CheckoutModal";
 import { ConfirmationModal } from "./_components/ConfirmationModal";
 import { Header } from "./_components/Header";
-import { useAuth } from "~~/hooks/useAuth";
-import { useLiskTransaction } from "./_hooks/useLiskTransaction";
+import { TreeCard } from "./_components/TreeCard";
 import { useFilecoinStorage } from "./_hooks/useFilecoinStorage";
-import type { Tree, DonationData } from "./_types";
+import { useLiskTransaction } from "./_hooks/useLiskTransaction";
+import type { DonationData, Tree } from "./_types";
+import { useAuth } from "~~/hooks/useAuth";
 
 const TREES_DATA: Tree[] = [
   {
@@ -16,12 +16,13 @@ const TREES_DATA: Tree[] = [
     name: "Roble Centenario",
     species: "Quercus robur",
     location: "Bosque de los Mil Años, Córdoba",
-    description: "Este majestuoso roble de 150 años necesita protección contra la tala ilegal y restauración de su entorno.",
+    description:
+      "Este majestuoso roble de 150 años necesita protección contra la tala ilegal y restauración de su entorno.",
     image: "/images/trees/roble.jpg",
     rescueAmount: 5,
     urgency: "Alta",
     impact: "Protección de biodiversidad local",
-    carbonCapture: "2.5 toneladas CO2/año"
+    carbonCapture: "2.5 toneladas CO2/año",
   },
   {
     id: 2,
@@ -33,7 +34,7 @@ const TREES_DATA: Tree[] = [
     rescueAmount: 3,
     urgency: "Media",
     impact: "Conservación de especie endémica",
-    carbonCapture: "1.8 toneladas CO2/año"
+    carbonCapture: "1.8 toneladas CO2/año",
   },
   {
     id: 3,
@@ -45,7 +46,7 @@ const TREES_DATA: Tree[] = [
     rescueAmount: 1,
     urgency: "Baja",
     impact: "Reforestación de áreas quemadas",
-    carbonCapture: "0.8 toneladas CO2/año"
+    carbonCapture: "0.8 toneladas CO2/año",
   },
   {
     id: 4,
@@ -57,7 +58,7 @@ const TREES_DATA: Tree[] = [
     rescueAmount: 2,
     urgency: "Alta",
     impact: "Preservación del ecosistema chaqueño",
-    carbonCapture: "1.2 toneladas CO2/año"
+    carbonCapture: "1.2 toneladas CO2/año",
   },
   {
     id: 5,
@@ -69,7 +70,7 @@ const TREES_DATA: Tree[] = [
     rescueAmount: 4,
     urgency: "Media",
     impact: "Conservación de la selva misionera",
-    carbonCapture: "2.0 toneladas CO2/año"
+    carbonCapture: "2.0 toneladas CO2/año",
   },
   {
     id: 6,
@@ -81,8 +82,8 @@ const TREES_DATA: Tree[] = [
     rescueAmount: 6,
     urgency: "Alta",
     impact: "Protección de bosque nativo",
-    carbonCapture: "3.0 toneladas CO2/año"
-  }
+    carbonCapture: "3.0 toneladas CO2/año",
+  },
 ];
 
 const RescataArbolPage = () => {
@@ -90,7 +91,7 @@ const RescataArbolPage = () => {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [donationData, setDonationData] = useState<DonationData | null>(null);
-  
+
   const { isAuthenticated, userAddress } = useAuth();
   const { createTransaction, isProcessing } = useLiskTransaction();
   const { uploadToFilecoin, isUploading } = useFilecoinStorage();
@@ -103,30 +104,30 @@ const RescataArbolPage = () => {
   const handleCheckoutComplete = async (data: DonationData) => {
     setDonationData(data);
     setIsCheckoutOpen(false);
-    
+
     try {
       // 1. Crear transacción en Lisk
       const txHash = await createTransaction({
         treeId: data.treeId,
         amount: data.amount,
         userAddress: userAddress || "",
-        treeName: data.treeName
+        treeName: data.treeName,
       });
 
       // 2. Subir evidencia a Filecoin (simulado)
       const filecoinCid = await uploadToFilecoin({
         treeImage: data.treeImage,
         receipt: data.receipt,
-        transactionHash: txHash
+        transactionHash: txHash,
       });
 
       // 3. Mostrar confirmación
       setDonationData({
         ...data,
         transactionHash: txHash,
-        filecoinCid
+        filecoinCid,
       });
-      
+
       setIsConfirmationOpen(true);
     } catch (error) {
       console.error("Error en el proceso de rescate:", error);
@@ -145,12 +146,8 @@ const RescataArbolPage = () => {
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">🌱</div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">
-            Conecta tu wallet para rescatar árboles
-          </h1>
-          <p className="text-gray-600">
-            Necesitas estar autenticado para continuar
-          </p>
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Conecta tu wallet para rescatar árboles</h1>
+          <p className="text-gray-600">Necesitas estar autenticado para continuar</p>
         </div>
       </div>
     );
@@ -159,16 +156,14 @@ const RescataArbolPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
       <Header />
-      
+
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-4">
-            🌱 Rescatá un Árbol
-          </h1>
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-4">🌱 Rescatá un Árbol</h1>
           <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
-            Protegé el bosque y ayudá a combatir el cambio climático. 
-            Cada donación se registra en blockchain para máxima transparencia.
+            Protegé el bosque y ayudá a combatir el cambio climático. Cada donación se registra en blockchain para
+            máxima transparencia.
           </p>
         </div>
 
@@ -198,46 +193,32 @@ const RescataArbolPage = () => {
 
         {/* Trees Grid */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-            Árboles que Necesitan tu Ayuda
-          </h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Árboles que Necesitan tu Ayuda</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {TREES_DATA.map((tree) => (
-              <TreeCard
-                key={tree.id}
-                tree={tree}
-                onRescue={handleRescueTree}
-              />
+            {TREES_DATA.map(tree => (
+              <TreeCard key={tree.id} tree={tree} onRescue={handleRescueTree} />
             ))}
           </div>
         </div>
 
         {/* How It Works */}
         <div className="bg-white rounded-3xl p-8 shadow-lg border border-green-100 mb-12">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-            ¿Cómo Funciona?
-          </h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">¿Cómo Funciona?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="text-4xl mb-4">🌱</div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">1. Elegí un Árbol</h3>
-              <p className="text-gray-600">
-                Seleccioná el árbol que querés rescatar de nuestra lista
-              </p>
+              <p className="text-gray-600">Seleccioná el árbol que querés rescatar de nuestra lista</p>
             </div>
             <div className="text-center">
               <div className="text-4xl mb-4">💳</div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">2. Hacé tu Donación</h3>
-              <p className="text-gray-600">
-                Elegí el monto y método de pago que prefieras
-              </p>
+              <p className="text-gray-600">Elegí el monto y método de pago que prefieras</p>
             </div>
             <div className="text-center">
               <div className="text-4xl mb-4">🌍</div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">3. Impacto Garantizado</h3>
-              <p className="text-gray-600">
-                Tu donación se registra en blockchain y se ejecuta el rescate
-              </p>
+              <p className="text-gray-600">Tu donación se registra en blockchain y se ejecuta el rescate</p>
             </div>
           </div>
         </div>
@@ -255,11 +236,7 @@ const RescataArbolPage = () => {
       )}
 
       {donationData && (
-        <ConfirmationModal
-          donationData={donationData}
-          isOpen={isConfirmationOpen}
-          onClose={handleCloseConfirmation}
-        />
+        <ConfirmationModal donationData={donationData} isOpen={isConfirmationOpen} onClose={handleCloseConfirmation} />
       )}
     </div>
   );
