@@ -6,9 +6,26 @@ import { useAccount } from "wagmi";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Logo } from "~~/components/Logo";
 import { Address } from "~~/components/scaffold-eth";
+import { useAuth } from "~~/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import RedirectToLogin from "~~/components/RedirectToLogin";
 
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push("/login");
+    }
+  }, [isAuthenticated, router]);
+
+  // Si no estás autenticado, mostrar componente de redirección
+  if (!isAuthenticated) {
+    return <RedirectToLogin />;
+  }
 
   return (
     <section className="flex items-center flex-col flex-grow pt-10">

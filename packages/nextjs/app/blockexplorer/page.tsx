@@ -7,6 +7,7 @@ import { hardhat } from "viem/chains";
 import { useFetchBlocks } from "~~/hooks/scaffold-eth";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 import { notification } from "~~/utils/scaffold-eth";
+import AuthGuard from "~~/components/AuthGuard";
 
 const BlockExplorer: NextPage = () => {
   const { blocks, transactionReceipts, currentPage, totalBlocks, setCurrentPage, error } = useFetchBlocks();
@@ -72,11 +73,13 @@ const BlockExplorer: NextPage = () => {
   }, [hasError]);
 
   return (
-    <div className="container mx-auto my-10">
-      <SearchBar />
-      <TransactionsTable blocks={blocks} transactionReceipts={transactionReceipts} />
-      <PaginationButton currentPage={currentPage} totalItems={Number(totalBlocks)} setCurrentPage={setCurrentPage} />
-    </div>
+    <AuthGuard>
+      <div className="container mx-auto my-10">
+        <SearchBar />
+        <TransactionsTable blocks={blocks} transactionReceipts={transactionReceipts} />
+        <PaginationButton currentPage={currentPage} totalItems={Number(totalBlocks)} setCurrentPage={setCurrentPage} />
+      </div>
+    </AuthGuard>
   );
 };
 
