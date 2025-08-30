@@ -1,0 +1,261 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Usuario Donante (ED)
+model Usuario {
+  id                            String   @id @default(cuid())
+  nombreUsuario                 String   @unique
+  walletBlockchain              String   @unique
+  email                         String   @unique
+  paisRegion                    String
+  esMiembroComunidadImpacto     Boolean  @default(false)
+  fechaInscripcionComunidad     DateTime?
+  nivelReconocimiento           String   @default("Bronce")
+  fechaCreacion                 DateTime @default(now())
+  fechaActualizacion            DateTime @updatedAt
+
+  // Relaciones
+  donaciones                    Donacion[]
+  suscripciones                 Suscripcion[]
+  membresiaComunidad            ComunidadImpacto?
+  respuestasEncuesta            RespuestaEncuesta[]
+
+  @@map("usuarios")
+}
+
+// Organizacion (ED)
+model Organizacion {
+  id                  String   @id @default(cuid())
+  credencialDID       String   @unique
+  nombreResponsable   String
+  documentacionLegal  String?
+  estado              EstadoOrganizacion @default(ACTIVA)
+  puntuacionReputacion Float   @default(0.0)
+  tipoOrganizacion    Boolean  // true = empresa, false = sin fines de lucro
+  fechaCreacion       DateTime @default(now())
+  fechaActualizacion  DateTime @updatedAt
+
+  // Relaciones
+  proyectos           ProyectoAmbiental[]
+  contratos           SmartContract[]
+
+  @@map("organizaciones")
+}
+
+// Proyecto Ambiental (ED)
+model ProyectoAmbiental {
+  id                    String   @id @default(cuid())
+  nombre                String
+  tipo                  TipoProyecto
+  localizacionGeografica String  // JSON string para coordenadas/polígono
+  impactoEsperado       Json     // JSON con métricas esperadas
+  estado                EstadoProyecto @default(NO_FINANCIADO)
+  fechaCreacion         DateTime @default(now())
+  fechaActualizacion    DateTime @updatedAt
+
+  // Relaciones
+  organizacionId        String
+  organizacion          Organizacion @relation(fields: [organizacionId], references: [id])
+  donaciones            Donacion[]
+  arboles               Arbol[]
+
+  @@map("proyectos_ambientales")
+}
+
+// Comunidad (ED)
+model Comunidad {
+  id                      String   @id @default(cuid())
+  nombreLider             String
+  nombreComunidad         String
+  credencialDID           String   @unique
+  localizacionGeografica  String
+  fechaCreacion           DateTime @default(now())
+  fechaActualizacion      DateTime @updatedAt
+
+  @@map("comunidades")
+}
+
+// Donación (ED)
+model Donacion {
+  id                String   @id @default(cuid())
+  montoDonado       Decimal  @db.Decimal(10, 2)
+  fechaDonacion     DateTime @default(now())
+  esRecurrente      Boolean  @default(false)
+  moneda            String   @default("DAI")
+  
+  // Relaciones
+  usuarioId         String
+  usuario           Usuario  @relation(fields: [usuarioId], references: [id])
+  proyectoId        String
+  proyecto          ProyectoAmbiental @relation(fields: [proyectoId], references: [id])
+  suscripcionId     String?
+  suscripcion       Suscripcion? @relation(fields: [suscripcionId], references: [id])
+  contratos         SmartContract[]
+
+  @@map("donaciones")
+}
+
+// SmartContract / Certificado On-Chain (ED)
+model SmartContract {
+  id              String   @id @default(cuid())
+  contractAddress String
+  txHash          String   @unique
+  monto           Decimal  @db.Decimal(10, 2)
+  moneda          String   @default("DAI")
+  evidenceURIs    Json     // Array de URLs/CIDs
+  status          EstadoContrato @default(PENDIENTE)
+  timestamp       DateTime @default(now())
+
+  // Relaciones
+  donacionId      String
+  donacion        Donacion @relation(fields: [donacionId], references: [id])
+  organizacionId  String
+  organizacion    Organizacion @relation(fields: [organizacionId], references: [id])
+
+  @@map("smart_contracts")
+}
+
+// Árbol / Recurso Físico (ED)
+model Arbol {
+  id                  String   @id @default(cuid())
+  estadoCrecimiento   EstadoCrecimiento @default(SEMBRADO)
+  metadata            Json     // Especie, fecha plantación, coordenadas
+  fechaCreacion       DateTime @default(now())
+  fechaActualizacion  DateTime @updatedAt
+
+  // Relaciones
+  proyectoId          String
+  proyecto            ProyectoAmbiental @relation(fields: [proyectoId], references: [id])
+
+  @@map("arboles")
+}
+
+// Suscripción (ED)
+model Suscripcion {
+  id                    String   @id @default(cuid())
+  monto                 Decimal  @db.Decimal(10, 2)
+  frecuencia            Frecuencia
+  fechaInicio           DateTime @default(now())
+  fechaProximoCobro     DateTime
+  estado                EstadoSuscripcion @default(ACTIVA)
+  metodoPago            String
+
+  // Relaciones
+  usuarioId             String
+  usuario               Usuario  @relation(fields: [usuarioId], references: [id])
+  donaciones            Donacion[]
+
+  @@map("suscripciones")
+}
+
+// ComunidadImpacto (ED)
+model ComunidadImpacto {
+  id                  String   @id @default(cuid())
+  fechaInscripcion    DateTime @default(now())
+  nivelParticipacion  String   @default("Básico")
+  esReferidor         Boolean  @default(false)
+
+  // Relaciones
+  usuarioId           String   @unique
+  usuario             Usuario  @relation(fields: [usuarioId], references: [id])
+
+  @@map("comunidad_impacto")
+}
+
+// MicroEncuesta (ED)
+model MicroEncuesta {
+  id                String   @id @default(cuid())
+  pregunta          String
+  opcionesRespuesta Json     // Array de opciones
+  estado            EstadoEncuesta @default(ACTIVA)
+  fechaCreacion     DateTime @default(now())
+  fechaActualizacion DateTime @updatedAt
+
+  // Relaciones
+  respuestas        RespuestaEncuesta[]
+
+  @@map("micro_encuestas")
+}
+
+// RespuestaEncuesta (ED)
+model RespuestaEncuesta {
+  id          String   @id @default(cuid())
+  respuesta   String
+  fecha       DateTime @default(now())
+
+  // Relaciones
+  encuestaId  String
+  encuesta    MicroEncuesta @relation(fields: [encuestaId], references: [id])
+  usuarioId   String
+  usuario     Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@unique([encuestaId, usuarioId]) // Un usuario solo puede responder una vez por encuesta
+  @@map("respuestas_encuesta")
+}
+
+// Enums
+enum EstadoOrganizacion {
+  ACTIVA
+  INACTIVA
+  EN_AUDITORIA
+}
+
+enum TipoProyecto {
+  REFORESTACION
+  BIODIVERSIDAD
+  AGUA
+  ENERGIA_RENOVABLE
+  CONSERVACION
+  RESTAURACION_ECOSISTEMAS
+}
+
+enum EstadoProyecto {
+  FINANCIADO
+  NO_FINANCIADO
+  ACTIVO
+  COMPLETADO
+  PAUSADO
+  CANCELADO
+}
+
+enum EstadoContrato {
+  PENDIENTE
+  CONFIRMADO
+  EJECUTADO
+  FALLIDO
+}
+
+enum EstadoCrecimiento {
+  SEMBRADO
+  JOVEN
+  ADULTO
+  NO_VIABLE
+}
+
+enum Frecuencia {
+  MENSUAL
+  TRIMESTRAL
+  SEMESTRAL
+  ANUAL
+}
+
+enum EstadoSuscripcion {
+  ACTIVA
+  PAUSADA
+  CANCELADA
+}
+
+enum EstadoEncuesta {
+  ACTIVA
+  CERRADA
+}
