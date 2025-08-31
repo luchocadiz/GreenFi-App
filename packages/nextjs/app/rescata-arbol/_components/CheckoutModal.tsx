@@ -16,7 +16,7 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
   const [customAmount, setCustomAmount] = useState<string>("");
   const [donorName, setDonorName] = useState<string>("");
   const [message, setMessage] = useState<string>("");
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>({ type: "card" });
+  // Removido: método de pago ya no es necesario
 
   // Montos rápidos en ETH
   const quickAmounts = ["0.01", "0.05", "0.1", "0.5", "1.0"];
@@ -53,10 +53,7 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
     setSelectedAmount(""); // Limpiar monto seleccionado
   };
 
-  // Manejar cambio de método de pago
-  const handlePaymentMethodChange = (method: PaymentMethod) => {
-    setSelectedPaymentMethod(method);
-  };
+  // Removido: manejo de método de pago
 
   // Manejar envío del formulario
   const handleSubmit = (e: React.FormEvent) => {
@@ -80,7 +77,7 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
       amount: finalAmount,
       donorName: donorName.trim(),
       message: message.trim() || "¡Salvemos este árbol!",
-      paymentMethod: selectedPaymentMethod,
+      // paymentMethod es opcional, se usa blockchain por defecto
     };
 
     onComplete(donationData);
@@ -183,36 +180,7 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
             )}
           </div>
 
-          {/* Método de pago */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">Método de pago:</label>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => handlePaymentMethodChange({ type: "card" })}
-                className={`p-4 rounded-lg border-2 transition-colors ${
-                  selectedPaymentMethod.type === "card"
-                    ? "border-green-500 bg-green-50"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                <div className="text-2xl mb-2">💳</div>
-                <div className="font-medium">Tarjeta</div>
-              </button>
-              <button
-                type="button"
-                onClick={() => handlePaymentMethodChange({ type: "qr" })}
-                className={`p-4 rounded-lg border-2 transition-colors ${
-                  selectedPaymentMethod.type === "qr"
-                    ? "border-green-500 bg-green-50"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                <div className="text-2xl mb-2">📱</div>
-                <div className="font-medium">QR</div>
-              </button>
-            </div>
-          </div>
+          {/* Método de pago removido */}
 
           {/* Resumen */}
           <div className="mb-6 p-4 bg-gray-50 rounded-lg">
@@ -227,8 +195,8 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
                 <span className="font-medium text-green-600">{getFinalAmount()} ETH</span>
               </div>
               <div className="flex justify-between">
-                <span>Método de pago:</span>
-                <span className="font-medium">{selectedPaymentMethod.type === "card" ? "💳 Tarjeta" : "📱 QR"}</span>
+                <span>Método:</span>
+                <span className="font-medium">⛓️ Blockchain</span>
               </div>
             </div>
           </div>
@@ -236,15 +204,30 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
           {/* Mensaje de transparencia */}
           <div className="mb-6 p-4 bg-blue-50 rounded-lg">
             <div className="flex items-start">
-              <div className="text-blue-600 text-lg mr-3">🔒</div>
+              <div className="text-blue-600 text-lg mr-3">⛓️</div>
               <div>
-                <p className="text-sm text-blue-800 font-medium">Tu identidad está protegida</p>
+                <p className="text-sm text-blue-800 font-medium">Transacción Real en Blockchain</p>
                 <p className="text-xs text-blue-600 mt-1">
-                  Tu donación se registra en blockchain para transparencia sin que tengas que entender la tecnología.
+                  ⚠️ Esta es una donación REAL con ETH real. Tu MetaMask procesará la transacción en la blockchain de Lisk.
                 </p>
               </div>
             </div>
           </div>
+
+          {/* Estado de procesamiento */}
+          {isProcessing && (
+            <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-600 mr-3"></div>
+                <div>
+                  <p className="text-sm text-yellow-800 font-medium">Procesando transacción...</p>
+                  <p className="text-xs text-yellow-600 mt-1">
+                    Por favor confirma la transacción en tu wallet y espera la confirmación.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Botón de confirmación */}
           <button
@@ -259,10 +242,10 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
             {isProcessing ? (
               <div className="flex items-center justify-center">
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Procesando...
+                Enviando a Blockchain...
               </div>
             ) : (
-              "Confirmar Rescate"
+              "🌳 Rescatar con Blockchain"
             )}
           </button>
         </form>

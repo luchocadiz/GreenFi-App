@@ -39,12 +39,12 @@ export const ConfirmationModal = ({ donationData, isOpen, onClose }: Confirmatio
   };
 
   const getPaymentMethodText = () => {
-    if (donationData.paymentMethod.type === "card") {
+    if (donationData.paymentMethod?.type === "card") {
       return "💳 Tarjeta";
-    } else if (donationData.paymentMethod.type === "qr") {
+    } else if (donationData.paymentMethod?.type === "qr") {
       return "📱 QR";
     }
-    return "💳 Tarjeta";
+    return "⛓️ Blockchain"; // Método por defecto
   };
 
   return (

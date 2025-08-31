@@ -35,7 +35,7 @@ export interface DonationData {
   amount: string;
   donorName: string;
   message: string;
-  paymentMethod: PaymentMethod;
+  paymentMethod?: PaymentMethod; // Opcional, ya que se usa blockchain por defecto
   transactionHash?: string;
   filecoinCid?: string;
 }
