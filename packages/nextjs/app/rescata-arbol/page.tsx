@@ -26,6 +26,8 @@ const RescataArbolPage = () => {
     isConfirming,
     donationHash,
     refreshProjects,
+    useSampleData,
+    contractAddress,
   } = useDonationsContract();
   const { uploadToFilecoin } = useFilecoinStorage();
 
@@ -148,6 +150,27 @@ const RescataArbolPage = () => {
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-800 mb-4">Árboles que Necesitan tu Ayuda</h2>
             <p className="text-lg text-gray-600">Seleccioná un proyecto y contribuí a la conservación ambiental</p>
+            
+            {/* Indicador de modo */}
+            <div className="mt-4">
+              {useSampleData ? (
+                <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm">
+                  <span className="mr-2">🎭</span>
+                  Modo Demo - Proyectos de Ejemplo
+                </div>
+              ) : (
+                <div className="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm">
+                  <span className="mr-2">⛓️</span>
+                  Datos en vivo desde Blockchain
+                </div>
+              )}
+            </div>
+            
+            {contractAddress && (
+              <div className="mt-2 text-xs text-gray-500">
+                Contrato: {contractAddress.slice(0, 6)}...{contractAddress.slice(-4)}
+              </div>
+            )}
           </div>
 
           {/* Estado de carga y error */}
@@ -185,9 +208,34 @@ const RescataArbolPage = () => {
             <div className="text-center py-12">
               <div className="text-6xl mb-4">🌱</div>
               <h3 className="text-2xl font-bold text-gray-800 mb-4">No hay proyectos disponibles</h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 mb-4">
                 Los proyectos se cargarán automáticamente cuando estén disponibles en el contrato.
               </p>
+              <button
+                onClick={refreshProjects}
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg"
+              >
+                Actualizar Proyectos
+              </button>
+            </div>
+          )}
+
+          {/* Información sobre el modo demo */}
+          {useSampleData && projects.length > 0 && (
+            <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+              <div className="flex items-start">
+                <div className="text-blue-600 text-2xl mr-3">ℹ️</div>
+                <div>
+                  <h3 className="text-blue-800 font-semibold mb-2">Modo Demostración</h3>
+                  <p className="text-blue-700 text-sm mb-3">
+                    Estás viendo proyectos de ejemplo. Las donaciones se simularán pero no se procesarán realmente. 
+                    Para usar el contrato real, asegúrate de que esté desplegado y configurado correctamente.
+                  </p>
+                  <div className="text-xs text-blue-600">
+                    💡 Tip: Puedes donar y ver cómo funcionaría la aplicación real
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </section>
