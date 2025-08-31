@@ -5,149 +5,95 @@ import { CheckoutModal } from "./_components/CheckoutModal";
 import { ConfirmationModal } from "./_components/ConfirmationModal";
 import { Header } from "./_components/Header";
 import { TreeCard } from "./_components/TreeCard";
+import { useDonationsContract } from "./_hooks/useDonationsContract";
 import { useFilecoinStorage } from "./_hooks/useFilecoinStorage";
-import { useLiskTransaction } from "./_hooks/useLiskTransaction";
-import type { DonationData, Tree } from "./_types";
+import type { DonationData, TreeProject } from "./_types";
 import { useAuth } from "~~/hooks/useAuth";
 
-const TREES_DATA: Tree[] = [
-  {
-    id: 1,
-    name: "Roble Centenario",
-    species: "Quercus robur",
-    location: "Bosque de los Mil Años, Córdoba",
-    description:
-      "Este majestuoso roble de 150 años necesita protección contra la tala ilegal y restauración de su entorno.",
-    image: "/images/trees/roble.jpg",
-    rescueAmount: 5,
-    urgency: "Alta",
-    impact: "Protección de biodiversidad local",
-    carbonCapture: "2.5 toneladas CO2/año",
-  },
-  {
-    id: 2,
-    name: "Araucaria del Sur",
-    species: "Araucaria araucana",
-    location: "Parque Nacional Lanín, Neuquén",
-    description: "Conífera milenaria amenazada por el cambio climático. Necesita monitoreo y conservación.",
-    image: "/images/trees/araucaria.jpg",
-    rescueAmount: 3,
-    urgency: "Media",
-    impact: "Conservación de especie endémica",
-    carbonCapture: "1.8 toneladas CO2/año",
-  },
-  {
-    id: 3,
-    name: "Ceibo Nacional",
-    species: "Erythrina crista-galli",
-    location: "Delta del Paraná, Buenos Aires",
-    description: "Árbol nacional argentino que requiere reforestación en áreas afectadas por incendios.",
-    image: "/images/trees/ceibo.jpg",
-    rescueAmount: 1,
-    urgency: "Baja",
-    impact: "Reforestación de áreas quemadas",
-    carbonCapture: "0.8 toneladas CO2/año",
-  },
-  {
-    id: 4,
-    name: "Algarrobo Blanco",
-    species: "Prosopis alba",
-    location: "Gran Chaco, Salta",
-    description: "Árbol nativo del Chaco que necesita protección contra la deforestación para agricultura.",
-    image: "/images/trees/algarrobo.jpg",
-    rescueAmount: 2,
-    urgency: "Alta",
-    impact: "Preservación del ecosistema chaqueño",
-    carbonCapture: "1.2 toneladas CO2/año",
-  },
-  {
-    id: 5,
-    name: "Pino Paraná",
-    species: "Araucaria angustifolia",
-    location: "Selva Misionera, Misiones",
-    description: "Conífera de la selva subtropical que requiere conservación de su hábitat natural.",
-    image: "/images/trees/pino-parana.jpg",
-    rescueAmount: 4,
-    urgency: "Media",
-    impact: "Conservación de la selva misionera",
-    carbonCapture: "2.0 toneladas CO2/año",
-  },
-  {
-    id: 6,
-    name: "Quebracho Colorado",
-    species: "Schinopsis balansae",
-    location: "Chaco Seco, Santiago del Estero",
-    description: "Árbol histórico del Chaco que necesita protección contra la tala indiscriminada.",
-    image: "/images/trees/quebracho.jpg",
-    rescueAmount: 6,
-    urgency: "Alta",
-    impact: "Protección de bosque nativo",
-    carbonCapture: "3.0 toneladas CO2/año",
-  },
-];
-
 const RescataArbolPage = () => {
-  const [selectedTree, setSelectedTree] = useState<Tree | null>(null);
+  const [selectedProject, setSelectedProject] = useState<TreeProject | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [donationData, setDonationData] = useState<DonationData | null>(null);
 
-  const { isAuthenticated, userAddress } = useAuth();
-  const { createTransaction, isProcessing } = useLiskTransaction();
-  const { uploadToFilecoin, isUploading } = useFilecoinStorage();
+  const { isAuthenticated } = useAuth();
+  const {
+    projects,
+    isLoading: isLoadingProjects,
+    error: projectsError,
+    makeDonation,
+    isDonating,
+    isConfirming,
+    donationHash,
+    refreshProjects,
+  } = useDonationsContract();
+  const { uploadToFilecoin } = useFilecoinStorage();
 
-  const handleRescueTree = (tree: Tree) => {
-    setSelectedTree(tree);
+  // Manejar selección de proyecto para rescate
+  const handleRescueProject = (project: TreeProject) => {
+    setSelectedProject(project);
     setIsCheckoutOpen(true);
   };
 
-  const handleCheckoutComplete = async (data: DonationData) => {
-    setDonationData(data);
+  // Manejar cierre del checkout
+  const handleCloseCheckout = () => {
     setIsCheckoutOpen(false);
+    setSelectedProject(null);
+  };
 
+  // Manejar completar el checkout
+  const handleCompleteCheckout = async (donationData: DonationData) => {
     try {
-      // 1. Crear transacción en Lisk
-      const txHash = await createTransaction({
-        treeId: data.treeId,
-        amount: data.amount,
-        userAddress: userAddress || "",
-        treeName: data.treeName,
-      });
+      // Hacer la donación en el contrato
+      await makeDonation(donationData);
 
-      // 2. Subir evidencia a Filecoin (simulado)
-      const filecoinCid = await uploadToFilecoin({
-        treeImage: data.treeImage,
-        receipt: data.receipt,
-        transactionHash: txHash,
-      });
+      // Cerrar checkout
+      setIsCheckoutOpen(false);
 
-      // 3. Mostrar confirmación
-      setDonationData({
-        ...data,
-        transactionHash: txHash,
-        filecoinCid,
-      });
+      // Esperar a que se confirme la transacción
+      if (donationHash) {
+        // Subir evidencia a Filecoin (simulado)
+        const filecoinCid = await uploadToFilecoin({
+          treeImage: donationData.treeName,
+          receipt: `Recibo_${donationData.treeName}_${Date.now()}.pdf`,
+          transactionHash: donationHash,
+        });
 
-      setIsConfirmationOpen(true);
+        // Actualizar datos de donación
+        const updatedDonationData = {
+          ...donationData,
+          transactionHash: donationHash,
+          filecoinCid,
+        };
+
+        setDonationData(updatedDonationData);
+        setIsConfirmationOpen(true);
+
+        // Refrescar proyectos para mostrar el nuevo estado
+        refreshProjects();
+      }
     } catch (error) {
-      console.error("Error en el proceso de rescate:", error);
-      // Aquí podrías mostrar un toast de error
+      console.error("Error processing donation:", error);
+      alert("Error al procesar la donación. Por favor, intenta nuevamente.");
     }
   };
 
+  // Manejar cierre de confirmación
   const handleCloseConfirmation = () => {
     setIsConfirmationOpen(false);
     setDonationData(null);
-    setSelectedTree(null);
+    setSelectedProject(null);
   };
 
+  // Mostrar mensaje si no está autenticado
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">🌱</div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">Conecta tu wallet para rescatar árboles</h1>
-          <p className="text-gray-600">Necesitas estar autenticado para continuar</p>
+          <div className="text-6xl mb-4">🌳</div>
+          <h1 className="text-3xl font-bold text-gray-800 mb-4">Conecta tu wallet para rescatar árboles</h1>
+          <p className="text-lg text-gray-600 mb-8">Necesitas estar autenticado para continuar</p>
+          <div className="text-sm text-gray-500">Conecta tu wallet de Lisk para acceder a la aplicación</div>
         </div>
       </div>
     );
@@ -159,79 +105,132 @@ const RescataArbolPage = () => {
 
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-4">🌱 Rescatá un Árbol</h1>
-          <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
-            Protegé el bosque y ayudá a combatir el cambio climático. Cada donación se registra en blockchain para
-            máxima transparencia.
-          </p>
-        </div>
+        <section className="text-center mb-16">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-5xl font-bold text-gray-800 mb-6">🌱 Rescatá un Árbol</h1>
+            <p className="text-xl text-gray-600 mb-8">
+              Cada donación se registra en blockchain para
+              <br />
+              máxima transparencia y trazabilidad
+            </p>
+            <div className="bg-white rounded-2xl p-6 shadow-lg">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="text-4xl mb-2">🌳</div>
+                  <div className="text-2xl font-bold text-green-600">{projects.length}</div>
+                  <div className="text-gray-600">Proyectos Activos</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl mb-2">💚</div>
+                  <div className="text-2xl font-bold text-blue-600">
+                    {projects
+                      .reduce((total, project) => {
+                        const raised = parseFloat(project.raisedAmount) / 1e18;
+                        return total + raised;
+                      }, 0)
+                      .toFixed(2)}{" "}
+                    ETH
+                  </div>
+                  <div className="text-gray-600">Total Recaudado</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl mb-2">🌍</div>
+                  <div className="text-2xl font-bold text-purple-600">{projects.length * 2.5}</div>
+                  <div className="text-gray-600">Toneladas CO2/año</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-          <div className="bg-white rounded-2xl p-6 text-center shadow-lg border border-green-100">
-            <div className="text-3xl text-green-600 mb-2">🌳</div>
-            <div className="text-2xl font-bold text-gray-800">1,247</div>
-            <div className="text-gray-600">Árboles Rescatados</div>
+        {/* Proyectos de Árboles */}
+        <section id="trees" className="mb-16">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">Árboles que Necesitan tu Ayuda</h2>
+            <p className="text-lg text-gray-600">Seleccioná un proyecto y contribuí a la conservación ambiental</p>
           </div>
-          <div className="bg-white rounded-2xl p-6 text-center shadow-lg border border-green-100">
-            <div className="text-3xl text-green-600 mb-2">💰</div>
-            <div className="text-2xl font-bold text-gray-800">$8,945</div>
-            <div className="text-gray-600">Fondos Recaudados</div>
-          </div>
-          <div className="bg-white rounded-2xl p-6 text-center shadow-lg border border-green-100">
-            <div className="text-3xl text-green-600 mb-2">🌍</div>
-            <div className="text-2xl font-bold text-gray-800">12.5</div>
-            <div className="text-gray-600">Ton CO2 Capturadas</div>
-          </div>
-          <div className="bg-white rounded-2xl p-6 text-center shadow-lg border border-green-100">
-            <div className="text-3xl text-green-600 mb-2">👥</div>
-            <div className="text-2xl font-bold text-gray-800">892</div>
-            <div className="text-gray-600">Rescatadores</div>
-          </div>
-        </div>
 
-        {/* Trees Grid */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Árboles que Necesitan tu Ayuda</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {TREES_DATA.map(tree => (
-              <TreeCard key={tree.id} tree={tree} onRescue={handleRescueTree} />
-            ))}
-          </div>
-        </div>
+          {/* Estado de carga y error */}
+          {isLoadingProjects && (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Cargando proyectos...</p>
+            </div>
+          )}
 
-        {/* How It Works */}
-        <div className="bg-white rounded-3xl p-8 shadow-lg border border-green-100 mb-12">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">¿Cómo Funciona?</h2>
+          {projectsError && (
+            <div className="text-center py-12">
+              <div className="text-red-500 text-xl mb-4">❌</div>
+              <p className="text-red-600 mb-4">Error al cargar los proyectos</p>
+              <button
+                onClick={refreshProjects}
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg"
+              >
+                Reintentar
+              </button>
+            </div>
+          )}
+
+          {/* Grid de proyectos */}
+          {!isLoadingProjects && !projectsError && projects.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {projects.map(project => (
+                <TreeCard key={project.id} project={project} onRescue={handleRescueProject} />
+              ))}
+            </div>
+          )}
+
+          {/* Sin proyectos */}
+          {!isLoadingProjects && !projectsError && projects.length === 0 && (
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4">🌱</div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">No hay proyectos disponibles</h3>
+              <p className="text-gray-600">
+                Los proyectos se cargarán automáticamente cuando estén disponibles en el contrato.
+              </p>
+            </div>
+          )}
+        </section>
+
+        {/* Cómo Funciona */}
+        <section id="about" className="mb-16">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">¿Cómo Funciona?</h2>
+            <p className="text-lg text-gray-600">El proceso es simple y transparente</p>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="text-4xl mb-4">🌱</div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">1. Elegí un Árbol</h3>
-              <p className="text-gray-600">Seleccioná el árbol que querés rescatar de nuestra lista</p>
+              <div className="text-6xl mb-4">1️⃣</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">Seleccioná el proyecto</h3>
+              <p className="text-gray-600">
+                Elegí el proyecto de conservación que más te interese de nuestra lista verificada
+              </p>
             </div>
             <div className="text-center">
-              <div className="text-4xl mb-4">💳</div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">2. Hacé tu Donación</h3>
-              <p className="text-gray-600">Elegí el monto y método de pago que prefieras</p>
+              <div className="text-6xl mb-4">2️⃣</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">Elegí tu contribución</h3>
+              <p className="text-gray-600">Seleccioná el monto y método de pago que prefieras para tu donación</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl mb-4">🌍</div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">3. Impacto Garantizado</h3>
-              <p className="text-gray-600">Tu donación se registra en blockchain y se ejecuta el rescate</p>
+              <div className="text-6xl mb-4">3️⃣</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">Impacto verificado</h3>
+              <p className="text-gray-600">
+                Tu donación se registra en blockchain y se ejecuta el proyecto de conservación
+              </p>
             </div>
           </div>
-        </div>
+        </section>
       </main>
 
-      {/* Modals */}
-      {selectedTree && (
+      {/* Modales */}
+      {selectedProject && (
         <CheckoutModal
-          tree={selectedTree}
+          project={selectedProject}
           isOpen={isCheckoutOpen}
-          onClose={() => setIsCheckoutOpen(false)}
-          onComplete={handleCheckoutComplete}
-          isProcessing={isProcessing || isUploading}
+          onClose={handleCloseCheckout}
+          onComplete={handleCompleteCheckout}
+          isProcessing={isDonating || isConfirming}
         />
       )}
 

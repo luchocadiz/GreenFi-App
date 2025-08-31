@@ -1,32 +1,51 @@
-export interface Tree {
+// Tipos que coinciden con el contrato NGODonations.sol
+export interface Project {
   id: number;
-  name: string;
-  species: string;
-  location: string;
-  description: string;
-  image: string;
-  rescueAmount: number;
-  urgency: "Baja" | "Media" | "Alta";
-  impact: string;
-  carbonCapture: string;
+  projectName: string;
+  ngoName: string;
+  ngoWallet: string;
+  targetAmount: string; // BigNumber como string
+  raisedAmount: string; // BigNumber como string
+  active: boolean;
+  createdAt: number; // timestamp
+}
+
+export interface Donation {
+  amount: string; // BigNumber como string
+  donorName: string;
+  message: string;
+  time: number; // timestamp
+  donorAddress: string;
+}
+
+// Tipos para la interfaz de usuario
+export interface TreeProject extends Project {
+  // Campos adicionales para la UI
+  image?: string;
+  description?: string;
+  location?: string;
+  impact?: string;
+  co2Capture?: string;
+  urgency?: "low" | "medium" | "high";
 }
 
 export interface DonationData {
-  treeId: number;
+  projectId: number;
   treeName: string;
-  amount: number;
-  paymentMethod: "card" | "qr";
-  treeImage: string;
-  receipt: string;
+  amount: string;
+  donorName: string;
+  message: string;
+  paymentMethod: PaymentMethod;
   transactionHash?: string;
   filecoinCid?: string;
 }
 
 export interface LiskTransactionData {
-  treeId: number;
-  amount: number;
-  userAddress: string;
-  treeName: string;
+  projectId: number;
+  donorName: string;
+  message: string;
+  amount: string;
+  donorAddress: string;
 }
 
 export interface FilecoinUploadData {
@@ -36,10 +55,8 @@ export interface FilecoinUploadData {
 }
 
 export interface PaymentMethod {
-  id: string;
-  name: string;
-  icon: string;
-  description: string;
+  type: "card" | "qr";
+  details?: string;
 }
 
 export interface Achievement {
@@ -48,5 +65,22 @@ export interface Achievement {
   description: string;
   icon: string;
   unlocked: boolean;
-  requirement: string;
+  unlockedAt?: number;
+}
+
+// Tipos para el estado de la aplicación
+export interface AppState {
+  projects: TreeProject[];
+  selectedProject: TreeProject | null;
+  userDonations: Donation[];
+  isLoading: boolean;
+  error: string | null;
+}
+
+// Tipos para las transacciones
+export interface TransactionStatus {
+  status: "pending" | "confirmed" | "failed";
+  hash?: string;
+  blockNumber?: number;
+  timestamp?: number;
 }

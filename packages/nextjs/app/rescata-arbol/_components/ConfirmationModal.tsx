@@ -26,7 +26,9 @@ export const ConfirmationModal = ({ donationData, isOpen, onClose }: Confirmatio
 
   const handleViewBlockchain = () => {
     // En producción, esto abriría el explorer de Lisk
-    window.open(`https://sepolia-blockscout.lisk.com/tx/${donationData.transactionHash}`, "_blank");
+    if (donationData.transactionHash) {
+      window.open(`https://sepolia-blockscout.lisk.com/tx/${donationData.transactionHash}`, "_blank");
+    }
   };
 
   const handleViewFilecoin = () => {
@@ -34,6 +36,15 @@ export const ConfirmationModal = ({ donationData, isOpen, onClose }: Confirmatio
     if (donationData.filecoinCid) {
       window.open(`https://filfox.info/en/ipfs/${donationData.filecoinCid}`, "_blank");
     }
+  };
+
+  const getPaymentMethodText = () => {
+    if (donationData.paymentMethod.type === "card") {
+      return "💳 Tarjeta";
+    } else if (donationData.paymentMethod.type === "qr") {
+      return "📱 QR";
+    }
+    return "💳 Tarjeta";
   };
 
   return (
@@ -80,12 +91,24 @@ export const ConfirmationModal = ({ donationData, isOpen, onClose }: Confirmatio
               </div>
               <div className="flex justify-between">
                 <span className="text-green-700">Monto donado:</span>
-                <span className="font-bold text-green-800">${donationData.amount}</span>
+                <span className="font-bold text-green-800">{donationData.amount} ETH</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-green-700">Método de pago:</span>
-                <span className="font-medium">{donationData.paymentMethod === "card" ? "💳 Tarjeta" : "📱 QR"}</span>
+                <span className="font-medium">{getPaymentMethodText()}</span>
               </div>
+              {donationData.donorName && (
+                <div className="flex justify-between">
+                  <span className="text-green-700">Tu nombre:</span>
+                  <span className="font-medium">{donationData.donorName}</span>
+                </div>
+              )}
+              {donationData.message && (
+                <div className="flex justify-between">
+                  <span className="text-green-700">Tu mensaje:</span>
+                  <span className="font-medium text-xs italic">&ldquo;{donationData.message}&rdquo;</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -106,49 +129,39 @@ export const ConfirmationModal = ({ donationData, isOpen, onClose }: Confirmatio
 
           {/* Enlaces a blockchain */}
           <div className="space-y-3">
-            <button
-              onClick={handleViewBlockchain}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors flex items-center justify-center space-x-2"
-            >
-              <span>🔗</span>
-              <span>Ver transacción en Lisk Explorer</span>
-            </button>
+            {donationData.transactionHash && (
+              <button
+                onClick={handleViewBlockchain}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-xl font-medium transition-colors flex items-center justify-center space-x-2"
+              >
+                <span>🔗</span>
+                <span>Ver en Blockchain (Lisk)</span>
+              </button>
+            )}
 
             {donationData.filecoinCid && (
               <button
                 onClick={handleViewFilecoin}
-                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors flex items-center justify-center space-x-2"
+                className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-xl font-medium transition-colors flex items-center justify-center space-x-2"
               >
                 <span>📁</span>
-                <span>Ver evidencia en Filecoin</span>
+                <span>Ver Evidencia (Filecoin)</span>
               </button>
             )}
           </div>
 
-          {/* Información de transparencia */}
+          {/* Información adicional */}
           <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
             <div className="flex items-start space-x-3">
-              <div className="text-blue-600 text-lg">🌐</div>
+              <div className="text-blue-600 text-lg">ℹ️</div>
               <div>
-                <p className="text-sm text-blue-800 font-medium">Transparencia Garantizada</p>
-                <p className="text-xs text-blue-600 mt-1">
-                  Tu donación está registrada en blockchain y es completamente verificable. Los fondos se destinan
-                  directamente a la conservación del árbol.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Impacto ambiental */}
-          <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
-            <div className="flex items-center space-x-3">
-              <div className="text-emerald-600 text-2xl">🌍</div>
-              <div>
-                <p className="text-sm text-emerald-800 font-medium">Impacto Ambiental</p>
-                <p className="text-xs text-emerald-600 mt-1">
-                  Con tu donación, contribuís a la captura de CO2 y la preservación de la biodiversidad local. ¡Cada
-                  árbol cuenta!
-                </p>
+                <h4 className="font-semibold text-blue-800 mb-2">¿Qué pasa ahora?</h4>
+                <ul className="text-sm text-blue-700 space-y-1">
+                  <li>• Tu donación se registró en blockchain</li>
+                  <li>• La evidencia se almacenó en Filecoin</li>
+                  <li>• El proyecto se ejecutará con los fondos</li>
+                  <li>• Recibirás actualizaciones del progreso</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -156,16 +169,10 @@ export const ConfirmationModal = ({ donationData, isOpen, onClose }: Confirmatio
           {/* Botón de cierre */}
           <button
             onClick={onClose}
-            className="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
+            className="w-full bg-gray-600 hover:bg-gray-700 text-white py-3 px-4 rounded-xl font-medium transition-colors"
           >
-            Continuar Rescatando Árboles
+            Cerrar
           </button>
-
-          {/* Información adicional */}
-          <div className="text-center">
-            <p className="text-xs text-gray-500 mb-2">Recibirás un email con el comprobante de tu donación</p>
-            <p className="text-xs text-gray-400">💚 Gracias por hacer del mundo un lugar mejor</p>
-          </div>
         </div>
       </div>
     </div>

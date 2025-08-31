@@ -1,222 +1,270 @@
 "use client";
 
 import { useState } from "react";
-import type { DonationData, PaymentMethod, Tree } from "../_types";
+import type { DonationData, PaymentMethod, TreeProject } from "../_types";
 
 interface CheckoutModalProps {
-  tree: Tree;
+  project: TreeProject;
   isOpen: boolean;
   onClose: () => void;
-  onComplete: (data: DonationData) => void;
+  onComplete: (donationData: DonationData) => void;
   isProcessing: boolean;
 }
 
-const PAYMENT_METHODS: PaymentMethod[] = [
-  {
-    id: "card",
-    name: "Tarjeta de Crédito/Débito",
-    icon: "💳",
-    description: "Pago seguro con Stripe",
-  },
-  {
-    id: "qr",
-    name: "Pago con QR",
-    icon: "📱",
-    description: "Mercado Pago, Ualá, etc.",
-  },
-];
+export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessing }: CheckoutModalProps) => {
+  const [selectedAmount, setSelectedAmount] = useState<string>("0.01");
+  const [customAmount, setCustomAmount] = useState<string>("");
+  const [donorName, setDonorName] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>({ type: "card" });
 
-const QUICK_AMOUNTS = [1, 3, 5, 10, 20];
+  // Montos rápidos en ETH
+  const quickAmounts = ["0.01", "0.05", "0.1", "0.5", "1.0"];
 
-export const CheckoutModal = ({ tree, isOpen, onClose, onComplete, isProcessing }: CheckoutModalProps) => {
-  const [selectedAmount, setSelectedAmount] = useState(tree.rescueAmount);
-  const [customAmount, setCustomAmount] = useState("");
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>(PAYMENT_METHODS[0]);
-  const [isCustomAmount, setIsCustomAmount] = useState(false);
+  // Convertir BigNumber strings a números para cálculos
+  const targetAmount = parseFloat(project.targetAmount) / 1e18; // Convertir de wei a ETH
+  const raisedAmount = parseFloat(project.raisedAmount) / 1e18; // Convertir de wei a ETH
+  const remainingAmount = targetAmount - raisedAmount;
 
-  if (!isOpen) return null;
-
-  const handleAmountSelect = (amount: number) => {
-    setSelectedAmount(amount);
-    setIsCustomAmount(false);
-    setCustomAmount("");
+  // Validar que el monto no exceda lo necesario
+  const isValidAmount = (amount: string) => {
+    const numAmount = parseFloat(amount);
+    return numAmount > 0 && numAmount <= remainingAmount;
   };
 
-  const handleCustomAmountChange = (value: string) => {
-    setCustomAmount(value);
-    if (value) {
-      setIsCustomAmount(true);
+  // Obtener el monto final (seleccionado o personalizado)
+  const getFinalAmount = () => {
+    if (customAmount && parseFloat(customAmount) > 0) {
+      return customAmount;
     }
+    return selectedAmount;
   };
 
+  // Manejar cambio de monto
+  const handleAmountChange = (amount: string) => {
+    setSelectedAmount(amount);
+    setCustomAmount(""); // Limpiar monto personalizado
+  };
+
+  // Manejar cambio de monto personalizado
+  const handleCustomAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setCustomAmount(value);
+    setSelectedAmount(""); // Limpiar monto seleccionado
+  };
+
+  // Manejar cambio de método de pago
+  const handlePaymentMethodChange = (method: PaymentMethod) => {
+    setSelectedPaymentMethod(method);
+  };
+
+  // Manejar envío del formulario
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const finalAmount = isCustomAmount ? parseFloat(customAmount) : selectedAmount;
+    const finalAmount = getFinalAmount();
 
-    if (finalAmount <= 0) {
-      alert("Por favor ingresa un monto válido");
+    if (!isValidAmount(finalAmount)) {
+      alert("Por favor, ingresa un monto válido");
+      return;
+    }
+
+    if (!donorName.trim()) {
+      alert("Por favor, ingresa tu nombre");
       return;
     }
 
     const donationData: DonationData = {
-      treeId: tree.id,
-      treeName: tree.name,
+      projectId: project.id,
+      treeName: project.projectName,
       amount: finalAmount,
-      paymentMethod: selectedPaymentMethod.id as "card" | "qr",
-      treeImage: tree.image,
-      receipt: `Recibo_${tree.name}_${Date.now()}.pdf`,
+      donorName: donorName.trim(),
+      message: message.trim() || "¡Salvemos este árbol!",
+      paymentMethod: selectedPaymentMethod,
     };
 
     onComplete(donationData);
   };
 
-  const finalAmount = isCustomAmount ? parseFloat(customAmount) || 0 : selectedAmount;
+  if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="p-6 border-b border-gray-100">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-gray-800">🌱 Rescatar {tree.name}</h2>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
-              ✕
-            </button>
-          </div>
-
-          <div className="bg-green-50 rounded-xl p-4">
-            <div className="flex items-center space-x-3">
-              <div className="text-3xl">🌳</div>
-              <div>
-                <p className="text-sm text-gray-600">{tree.species}</p>
-                <p className="text-xs text-gray-500">{tree.location}</p>
-              </div>
-            </div>
-          </div>
+        <div className="flex items-center justify-between p-6 border-b border-gray-100">
+          <h2 className="text-xl font-bold text-gray-800">Rescatar {project.projectName}</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+            ✕
+          </button>
         </div>
 
-        {/* Formulario */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-6">
+          {/* Información del proyecto */}
+          <div className="mb-6 p-4 bg-green-50 rounded-lg">
+            <h3 className="font-semibold text-green-800 mb-2">Proyecto: {project.projectName}</h3>
+            <p className="text-sm text-green-700 mb-2">ONG: {project.ngoName}</p>
+            <div className="text-sm text-green-600">
+              <span className="font-medium">Meta:</span> {targetAmount.toFixed(2)} ETH
+              <br />
+              <span className="font-medium">Recaudado:</span> {raisedAmount.toFixed(2)} ETH
+              <br />
+              <span className="font-medium">Faltan:</span> {remainingAmount.toFixed(2)} ETH
+            </div>
+          </div>
+
+          {/* Nombre del donante */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Tu nombre *</label>
+            <input
+              type="text"
+              value={donorName}
+              onChange={e => setDonorName(e.target.value)}
+              placeholder="Ingresa tu nombre completo"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              required
+            />
+          </div>
+
+          {/* Mensaje personalizado */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Mensaje (opcional)</label>
+            <textarea
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+              placeholder="Escribe un mensaje para este proyecto..."
+              rows={3}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            />
+          </div>
+
           {/* Selección de monto */}
-          <div>
+          <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-3">Seleccioná el monto de tu donación:</label>
 
             {/* Montos rápidos */}
-            <div className="grid grid-cols-3 gap-3 mb-4">
-              {QUICK_AMOUNTS.map(amount => (
+            <div className="grid grid-cols-3 gap-2 mb-3">
+              {quickAmounts.map(amount => (
                 <button
                   key={amount}
                   type="button"
-                  onClick={() => handleAmountSelect(amount)}
-                  className={`py-3 px-4 rounded-xl border-2 transition-all ${
-                    selectedAmount === amount && !isCustomAmount
-                      ? "border-green-500 bg-green-50 text-green-700"
-                      : "border-gray-200 hover:border-green-300 text-gray-700"
+                  onClick={() => handleAmountChange(amount)}
+                  className={`py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+                    selectedAmount === amount && !customAmount
+                      ? "bg-green-600 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
-                  <div className="text-lg font-bold">${amount}</div>
-                  <div className="text-xs text-gray-500">USD</div>
+                  {amount} ETH
                 </button>
               ))}
             </div>
 
             {/* Monto personalizado */}
-            <div className="flex items-center space-x-3">
+            <div className="relative">
               <input
                 type="number"
-                placeholder="Otro monto"
                 value={customAmount}
-                onChange={e => handleCustomAmountChange(e.target.value)}
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                min="0.01"
+                onChange={handleCustomAmountChange}
+                placeholder="O ingresa un monto personalizado"
                 step="0.01"
+                min="0.001"
+                max={remainingAmount}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
               />
-              <span className="text-gray-500">USD</span>
+              <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">ETH</span>
             </div>
+
+            {/* Validación de monto */}
+            {customAmount && !isValidAmount(customAmount) && (
+              <p className="text-red-500 text-sm mt-1">
+                El monto debe ser mayor a 0 y no exceder {remainingAmount.toFixed(2)} ETH
+              </p>
+            )}
           </div>
 
           {/* Método de pago */}
-          <div>
+          <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-3">Método de pago:</label>
-            <div className="space-y-3">
-              {PAYMENT_METHODS.map(method => (
-                <label
-                  key={method.id}
-                  className={`flex items-center space-x-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                    selectedPaymentMethod.id === method.id
-                      ? "border-green-500 bg-green-50"
-                      : "border-gray-200 hover:border-green-300"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value={method.id}
-                    checked={selectedPaymentMethod.id === method.id}
-                    onChange={() => setSelectedPaymentMethod(method)}
-                    className="text-green-600 focus:ring-green-500"
-                  />
-                  <div className="text-2xl">{method.icon}</div>
-                  <div>
-                    <div className="font-medium text-gray-800">{method.name}</div>
-                    <div className="text-sm text-gray-500">{method.description}</div>
-                  </div>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Información de transparencia */}
-          <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
-            <div className="flex items-start space-x-3">
-              <div className="text-blue-600 text-lg">🔒</div>
-              <div>
-                <p className="text-sm text-blue-800 font-medium">Tu identidad está protegida</p>
-                <p className="text-xs text-blue-600 mt-1">
-                  Tu donación se registra automáticamente en blockchain para máxima transparencia, sin que tengas que
-                  entender la tecnología.
-                </p>
-              </div>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => handlePaymentMethodChange({ type: "card" })}
+                className={`p-4 rounded-lg border-2 transition-colors ${
+                  selectedPaymentMethod.type === "card"
+                    ? "border-green-500 bg-green-50"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <div className="text-2xl mb-2">💳</div>
+                <div className="font-medium">Tarjeta</div>
+              </button>
+              <button
+                type="button"
+                onClick={() => handlePaymentMethodChange({ type: "qr" })}
+                className={`p-4 rounded-lg border-2 transition-colors ${
+                  selectedPaymentMethod.type === "qr"
+                    ? "border-green-500 bg-green-50"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <div className="text-2xl mb-2">📱</div>
+                <div className="font-medium">QR</div>
+              </button>
             </div>
           </div>
 
           {/* Resumen */}
-          <div className="bg-gray-50 rounded-xl p-4">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-gray-600">Monto de donación:</span>
-              <span className="text-lg font-bold text-gray-800">${finalAmount}</span>
+          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+            <h4 className="font-semibold text-gray-800 mb-2">Resumen de tu donación</h4>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span>Proyecto:</span>
+                <span className="font-medium">{project.projectName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Monto:</span>
+                <span className="font-medium text-green-600">{getFinalAmount()} ETH</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Método de pago:</span>
+                <span className="font-medium">{selectedPaymentMethod.type === "card" ? "💳 Tarjeta" : "📱 QR"}</span>
+              </div>
             </div>
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-gray-600">Árbol a rescatar:</span>
-              <span className="font-medium text-gray-800">{tree.name}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Método de pago:</span>
-              <span className="font-medium text-gray-800">{selectedPaymentMethod.name}</span>
+          </div>
+
+          {/* Mensaje de transparencia */}
+          <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+            <div className="flex items-start">
+              <div className="text-blue-600 text-lg mr-3">🔒</div>
+              <div>
+                <p className="text-sm text-blue-800 font-medium">Tu identidad está protegida</p>
+                <p className="text-xs text-blue-600 mt-1">
+                  Tu donación se registra en blockchain para transparencia sin que tengas que entender la tecnología.
+                </p>
+              </div>
             </div>
           </div>
 
           {/* Botón de confirmación */}
           <button
             type="submit"
-            disabled={isProcessing || finalAmount <= 0}
-            className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 disabled:transform-none disabled:cursor-not-allowed shadow-lg"
+            disabled={isProcessing || !isValidAmount(getFinalAmount()) || !donorName.trim()}
+            className={`w-full py-4 px-6 rounded-lg font-semibold text-white transition-all duration-300 ${
+              isProcessing || !isValidAmount(getFinalAmount()) || !donorName.trim()
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-green-600 hover:bg-green-700 transform hover:scale-105"
+            }`}
           >
             {isProcessing ? (
-              <div className="flex items-center justify-center space-x-2">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                <span>Procesando...</span>
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                Procesando...
               </div>
             ) : (
-              `🌱 Confirmar Rescate - $${finalAmount}`
+              "Confirmar Rescate"
             )}
           </button>
-
-          {/* Información adicional */}
-          <p className="text-xs text-gray-500 text-center">
-            Al confirmar, aceptás nuestros términos y condiciones. Tu donación se procesará de forma segura.
-          </p>
         </form>
       </div>
     </div>

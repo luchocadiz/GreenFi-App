@@ -1,109 +1,168 @@
 "use client";
 
 import { useState } from "react";
-import type { Tree } from "../_types";
+import type { TreeProject } from "../_types";
 
 interface TreeCardProps {
-  tree: Tree;
-  onRescue: (tree: Tree) => void;
+  project: TreeProject;
+  onRescue: (project: TreeProject) => void;
 }
 
-export const TreeCard = ({ tree, onRescue }: TreeCardProps) => {
+export const TreeCard = ({ project, onRescue }: TreeCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
+  // Convertir BigNumber strings a números para cálculos
+  const targetAmount = parseFloat(project.targetAmount) / 1e18; // Convertir de wei a ETH
+  const raisedAmount = parseFloat(project.raisedAmount) / 1e18; // Convertir de wei a ETH
+  const progressPercentage = Math.min((raisedAmount / targetAmount) * 100, 100);
+
+  // Calcular monto restante
+  const remainingAmount = targetAmount - raisedAmount;
+
+  // Determinar color de urgencia
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
-      case "Alta":
-        return "bg-red-100 text-red-800 border-red-200";
-      case "Media":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "Baja":
-        return "bg-green-100 text-green-800 border-green-200";
+      case "high":
+        return "text-red-600 bg-red-100";
+      case "medium":
+        return "text-yellow-600 bg-yellow-100";
+      case "low":
+        return "text-green-600 bg-green-100";
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return "text-gray-600 bg-gray-100";
     }
   };
 
-  const getUrgencyIcon = (urgency: string) => {
+  // Determinar texto de urgencia
+  const getUrgencyText = (urgency: string) => {
     switch (urgency) {
-      case "Alta":
-        return "🚨";
-      case "Media":
-        return "⚠️";
-      case "Baja":
-        return "✅";
+      case "high":
+        return "Alta Urgencia";
+      case "medium":
+        return "Urgencia Media";
+      case "low":
+        return "Baja Urgencia";
       default:
-        return "ℹ️";
+        return "Urgencia Media";
     }
   };
 
   return (
     <div
-      className={`bg-white rounded-2xl shadow-lg border border-green-100 overflow-hidden transition-all duration-300 transform ${
-        isHovered ? "scale-105 shadow-xl" : "hover:scale-102"
+      className={`relative bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 transform ${
+        isHovered ? "scale-105 shadow-xl" : "hover:shadow-xl"
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Imagen del árbol */}
-      <div className="relative h-48 bg-gradient-to-br from-green-100 to-emerald-100">
+      {/* Imagen del proyecto */}
+      <div className="relative h-48 bg-gradient-to-br from-green-400 to-green-600 overflow-hidden">
+        <div className="absolute inset-0 bg-black bg-opacity-20" />
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-6xl opacity-60">🌳</div>
+          <div className="text-6xl">🌳</div>
         </div>
-        <div className="absolute top-3 right-3">
-          <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getUrgencyColor(tree.urgency)}`}>
-            {getUrgencyIcon(tree.urgency)} {tree.urgency}
-          </span>
+
+        {/* Badge de urgencia */}
+        <div
+          className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold ${getUrgencyColor(
+            project.urgency || "medium",
+          )}`}
+        >
+          {getUrgencyText(project.urgency || "medium")}
+        </div>
+
+        {/* Badge de estado */}
+        <div
+          className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold ${
+            project.active ? "text-green-600 bg-green-100" : "text-red-600 bg-red-100"
+          }`}
+        >
+          {project.active ? "Activo" : "Inactivo"}
         </div>
       </div>
 
-      {/* Contenido */}
+      {/* Contenido de la tarjeta */}
       <div className="p-6">
+        {/* Título y ONG */}
         <div className="mb-4">
-          <h3 className="text-xl font-bold text-gray-800 mb-2">{tree.name}</h3>
-          <p className="text-sm text-gray-600 italic mb-2">{tree.species}</p>
-          <p className="text-sm text-gray-500 mb-3">📍 {tree.location}</p>
+          <h3 className="text-xl font-bold text-gray-800 mb-2">{project.projectName}</h3>
+          <p className="text-sm text-gray-600">por {project.ngoName}</p>
         </div>
 
-        <p className="text-gray-700 text-sm mb-4 line-clamp-3">{tree.description}</p>
+        {/* Descripción */}
+        <p className="text-gray-700 mb-4 line-clamp-2">{project.description}</p>
 
-        {/* Impacto y Captura de CO2 */}
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="bg-green-50 rounded-lg p-3">
-            <div className="text-xs text-green-600 font-medium mb-1">Impacto</div>
-            <div className="text-sm text-gray-800">{tree.impact}</div>
+        {/* Ubicación */}
+        <div className="flex items-center text-sm text-gray-600 mb-4">
+          <span className="mr-2">📍</span>
+          <span>{project.location}</span>
+        </div>
+
+        {/* Impacto y CO2 */}
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="text-center p-3 bg-green-50 rounded-lg">
+            <div className="text-2xl mb-1">🌱</div>
+            <div className="text-sm font-medium text-green-800">Impacto</div>
+            <div className="text-xs text-green-600">{project.impact}</div>
           </div>
-          <div className="bg-blue-50 rounded-lg p-3">
-            <div className="text-xs text-blue-600 font-medium mb-1">Captura CO2</div>
-            <div className="text-sm text-gray-800">{tree.carbonCapture}</div>
+          <div className="text-center p-3 bg-blue-50 rounded-lg">
+            <div className="text-2xl mb-1">🌍</div>
+            <div className="text-sm font-medium text-blue-800">Captura CO2</div>
+            <div className="text-xs text-blue-600">{project.co2Capture}</div>
           </div>
         </div>
 
-        {/* Monto de rescate */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">${tree.rescueAmount}</div>
-            <div className="text-xs text-gray-500">para rescatar</div>
+        {/* Progreso de recaudación */}
+        <div className="mb-4">
+          <div className="flex justify-between text-sm text-gray-600 mb-2">
+            <span>Recaudado: {raisedAmount.toFixed(2)} ETH</span>
+            <span>Meta: {targetAmount.toFixed(2)} ETH</span>
           </div>
-          <div className="text-center">
-            <div className="text-sm text-gray-600">Tu donación se registra en</div>
-            <div className="text-xs text-blue-600 font-medium">Lisk Blockchain</div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div
+              className="bg-green-500 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${progressPercentage}%` }}
+            />
           </div>
+          <div className="text-xs text-gray-500 mt-1">{progressPercentage.toFixed(1)}% completado</div>
+        </div>
+
+        {/* Monto restante */}
+        <div className="text-center mb-4">
+          <div className="text-lg font-bold text-green-600">Faltan {remainingAmount.toFixed(2)} ETH</div>
+          <div className="text-sm text-gray-600">para completar el proyecto</div>
         </div>
 
         {/* Botón de rescate */}
         <button
-          onClick={() => onRescue(tree)}
-          className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
+          onClick={() => onRescue(project)}
+          disabled={!project.active || remainingAmount <= 0}
+          className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-300 ${
+            !project.active || remainingAmount <= 0
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-green-600 hover:bg-green-700 transform hover:scale-105"
+          }`}
         >
-          🌱 Rescatar Ahora
+          {!project.active ? "Proyecto Inactivo" : remainingAmount <= 0 ? "¡Proyecto Completado!" : "Rescatar Ahora"}
         </button>
 
         {/* Información adicional */}
         <div className="mt-4 text-center">
-          <p className="text-xs text-gray-500">💚 100% transparente • 🔒 Datos protegidos • 🌍 Impacto verificable</p>
+          <div className="text-xs text-gray-500">
+            💚 100% transparente • 🔒 Datos protegidos • 🌍 Impacto verificable
+          </div>
+        </div>
+
+        {/* Fecha de creación */}
+        <div className="mt-3 text-center">
+          <div className="text-xs text-gray-400">
+            Creado: {new Date(project.createdAt * 1000).toLocaleDateString("es-AR")}
+          </div>
         </div>
       </div>
+
+      {/* Efectos de hover */}
+      {isHovered && <div className="absolute inset-0 bg-green-500 bg-opacity-5 pointer-events-none" />}
     </div>
   );
 };
