@@ -14,8 +14,8 @@ export const Header = () => {
 
   const handleDisconnect = () => {
     disconnect();
-    toast.success("Wallet desconectada exitosamente 👋");
-    // Redirigir al login después de un breve delay
+    toast.success("Wallet disconnected successfully 👋");
+    // Redirect to login after a brief delay
     setTimeout(() => {
       router.push("/login");
     }, 1000);
@@ -30,37 +30,37 @@ export const Header = () => {
             <Image src="/image201.png" alt="GreenFi Logo" width={150} height={150} />
           </Link>
 
-          {/* Navegación */}
+          {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link href="/rescata-arbol" className="text-gray-700 hover:text-green-600 transition-colors font-medium">
-              Inicio
+              Home
             </Link>
             <Link
               href="/rescata-arbol#trees"
               className="text-gray-700 hover:text-green-600 transition-colors font-medium"
             >
-              Árboles
+              Trees
             </Link>
             <Link
               href="/rescata-arbol#impact"
               className="text-gray-700 hover:text-green-600 transition-colors font-medium"
             >
-              Impacto
+              Impact
             </Link>
             <Link
               href="/rescata-arbol#about"
               className="text-gray-700 hover:text-green-600 transition-colors font-medium"
             >
-              Nosotros
+              About Us
             </Link>
           </nav>
 
-          {/* Estado de Autenticación */}
+          {/* Authentication State */}
           <div className="flex items-center space-x-4">
             {isAuthenticated ? (
               <div className="flex items-center space-x-3">
                 <div className="text-right">
-                  <div className="text-sm font-medium text-gray-800">Conectado a Lisk</div>
+                  <div className="text-sm font-medium text-gray-800">Connected to Lisk</div>
                   <div className="text-xs text-gray-500">
                     {userAddress?.slice(0, 6)}...{userAddress?.slice(-4)}
                   </div>
@@ -68,16 +68,16 @@ export const Header = () => {
                 <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
               </div>
             ) : (
-              <div className="text-sm text-gray-500">No conectado</div>
+              <div className="text-sm text-gray-500">Not connected</div>
             )}
 
-            {/* Botón de Desconectar */}
+            {/* Disconnect Button */}
             <button
               onClick={handleDisconnect}
               className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors font-medium flex items-center space-x-2"
             >
               <span>🔌</span>
-              <span>Desconectar</span>
+              <span>Disconnect</span>
             </button>
           </div>
         </div>

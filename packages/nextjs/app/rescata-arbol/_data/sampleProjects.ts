@@ -1,40 +1,40 @@
 import { TreeProject } from "../_types";
 import { parseEther } from "viem";
 
-// Proyectos de ejemplo hardcodeados - Solo 3 proyectos principales
+// Hardcoded sample projects - Only 3 main projects
 export const sampleProjects: TreeProject[] = [
   {
     id: 1,
-    projectName: "Rescate de Ceiba Centenaria",
-    ngoName: "Fundación Bosques Nativos",
+    projectName: "Centenary Ceiba Rescue",
+    ngoName: "Native Forests Foundation",
     ngoWallet: "0x742d35Cc6634C0532925a3b8D0B251E3fE4d8D8D",
     targetAmount: parseEther("2.5").toString(),
     raisedAmount: parseEther("0.8").toString(),
     active: true,
-    createdAt: Math.floor(Date.now() / 1000) - 86400 * 7, // 7 días atrás
-    // Campos adicionales para la UI
+    createdAt: Math.floor(Date.now() / 1000) - 86400 * 7, // 7 days ago
+    // Additional fields for the UI
     image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1000&auto=format&fit=crop",
     description:
-      "Una majestuosa ceiba de más de 200 años está en peligro por la expansión urbana. Necesitamos fondos para su protección y reubicación.",
+      "A majestic ceiba tree over 200 years old is threatened by urban expansion. We need funds for its protection and relocation.",
     location: "Córdoba, Argentina",
-    impact: "Preservación de patrimonio natural",
-    co2Capture: "3.2 toneladas/año",
+    impact: "Natural heritage preservation",
+    co2Capture: "3.2 tons/year",
     urgency: "high",
   },
   {
     id: 2,
-    projectName: "Selva Misionera en Peligro",
+    projectName: "Misiones Rainforest in Danger",
     ngoName: "Misiones Verde",
     ngoWallet: "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB",
     targetAmount: parseEther("4.5").toString(),
     raisedAmount: parseEther("2.1").toString(),
     active: true,
-    createdAt: Math.floor(Date.now() / 1000) - 86400 * 3, // 3 días atrás
+    createdAt: Math.floor(Date.now() / 1000) - 86400 * 3, // 3 days ago
     image: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=1000&auto=format&fit=crop",
-    description: "Preservación de 20 hectáreas de selva nativa con especies únicas de la región misionera.",
+    description: "Preservation of 20 hectares of native rainforest with unique species from the Misiones region.",
     location: "Misiones, Argentina",
-    impact: "Protección del pulmón verde",
-    co2Capture: "5.5 toneladas/año",
+    impact: "Green lung protection",
+    co2Capture: "5.5 tons/year",
     urgency: "high",
   },
   {
@@ -45,27 +45,27 @@ export const sampleProjects: TreeProject[] = [
     targetAmount: parseEther("2.8").toString(),
     raisedAmount: parseEther("0.5").toString(),
     active: true,
-    createdAt: Math.floor(Date.now() / 1000) - 86400 * 12, // 12 días atrás
+    createdAt: Math.floor(Date.now() / 1000) - 86400 * 12, // 12 days ago
     image: "https://images.unsplash.com/photo-1440342359743-84fcb8c21f21?q=80&w=1000&auto=format&fit=crop",
-    description: "Protección de los últimos quebrachos colorados del Gran Chaco ante la deforestación.",
+    description: "Protection of the last red quebrachos of the Gran Chaco against deforestation.",
     location: "Chaco, Argentina",
-    impact: "Preservación de biodiversidad",
-    co2Capture: "2.7 toneladas/año",
+    impact: "Biodiversity preservation",
+    co2Capture: "2.7 tons/year",
     urgency: "high",
   },
 ];
 
-// Función para obtener un proyecto de ejemplo por ID
+// Function to get a sample project by ID
 export const getSampleProjectById = (id: number): TreeProject | undefined => {
   return sampleProjects.find(project => project.id === id);
 };
 
-// Función para obtener proyectos filtrados por urgencia
+// Function to get projects filtered by urgency
 export const getSampleProjectsByUrgency = (urgency: "low" | "medium" | "high"): TreeProject[] => {
   return sampleProjects.filter(project => project.urgency === urgency);
 };
 
-// Función para obtener proyectos activos
+// Function to get active projects
 export const getActiveSampleProjects = (): TreeProject[] => {
   return sampleProjects.filter(project => project.active);
 };

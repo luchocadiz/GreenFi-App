@@ -102,7 +102,7 @@ export const TreeCard = ({ project, onRescue }: TreeCardProps) => {
         {/* Título y ONG */}
         <div className="mb-4">
           <h3 className="text-xl font-bold text-gray-800 mb-2">{project.projectName}</h3>
-          <p className="text-sm text-gray-600">por {project.ngoName}</p>
+          <p className="text-sm text-gray-600">by {project.ngoName}</p>
         </div>
 
         {/* Descripción */}
@@ -118,12 +118,12 @@ export const TreeCard = ({ project, onRescue }: TreeCardProps) => {
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div className="text-center p-3 bg-green-50 rounded-lg">
             <div className="text-2xl mb-1">🌱</div>
-            <div className="text-sm font-medium text-green-800">Impacto</div>
+            <div className="text-sm font-medium text-green-800">Impact</div>
             <div className="text-xs text-green-600">{project.impact}</div>
           </div>
           <div className="text-center p-3 bg-blue-50 rounded-lg">
             <div className="text-2xl mb-1">🌍</div>
-            <div className="text-sm font-medium text-blue-800">Captura CO2</div>
+            <div className="text-sm font-medium text-blue-800">CO2 capture</div>
             <div className="text-xs text-blue-600">{project.co2Capture}</div>
           </div>
         </div>
@@ -131,8 +131,8 @@ export const TreeCard = ({ project, onRescue }: TreeCardProps) => {
         {/* Progreso de recaudación */}
         <div className="mb-4">
           <div className="flex justify-between text-sm text-gray-600 mb-2">
-            <span>Recaudado: {raisedAmount.toFixed(2)} ETH</span>
-            <span>Meta: {targetAmount.toFixed(2)} ETH</span>
+            <span>Collected: {raisedAmount.toFixed(2)} ETH</span>
+            <span>Goal: {targetAmount.toFixed(2)} ETH</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
@@ -140,13 +140,13 @@ export const TreeCard = ({ project, onRescue }: TreeCardProps) => {
               style={{ width: `${progressPercentage}%` }}
             />
           </div>
-          <div className="text-xs text-gray-500 mt-1">{progressPercentage.toFixed(1)}% completado</div>
+          <div className="text-xs text-gray-500 mt-1">{progressPercentage.toFixed(1)}% completed</div>
         </div>
 
         {/* Monto restante */}
         <div className="text-center mb-4">
-          <div className="text-lg font-bold text-green-600">Faltan {remainingAmount.toFixed(2)} ETH</div>
-          <div className="text-sm text-gray-600">para completar el proyecto</div>
+          <div className="text-lg font-bold text-green-600">Missing {remainingAmount.toFixed(2)} ETH</div>
+          <div className="text-sm text-gray-600">to complete the project</div>
         </div>
 
         {/* Botón de rescate */}
@@ -159,20 +159,18 @@ export const TreeCard = ({ project, onRescue }: TreeCardProps) => {
               : "bg-green-600 hover:bg-green-700 transform hover:scale-105"
           }`}
         >
-          {!project.active ? "Proyecto Inactivo" : remainingAmount <= 0 ? "¡Proyecto Completado!" : "Rescatar Ahora"}
+          {!project.active ? "Inactive Project" : remainingAmount <= 0 ? "¡Project Completed!" : "Rescue Now"}
         </button>
 
         {/* Información adicional */}
         <div className="mt-4 text-center">
-          <div className="text-xs text-gray-500">
-            💚 100% transparente • 🔒 Datos protegidos • 🌍 Impacto verificable
-          </div>
+          <div className="text-xs text-gray-500">💚 100% transparent • 🔒 Protected data • 🌍 Verifiable impact</div>
         </div>
 
         {/* Fecha de creación */}
         <div className="mt-3 text-center">
           <div className="text-xs text-gray-400">
-            Creado: {new Date(project.createdAt * 1000).toLocaleDateString("es-AR")}
+            Created: {new Date(project.createdAt * 1000).toLocaleDateString("es-AR")}
           </div>
         </div>
       </div>

@@ -17,23 +17,23 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
   const [customAmount, setCustomAmount] = useState<string>("");
   const [donorName, setDonorName] = useState<string>("");
   const [message, setMessage] = useState<string>("");
-  // Removido: método de pago ya no es necesario
+  // Removed: payment method no longer needed
 
-  // Montos rápidos en ETH
+  // Quick amounts in ETH
   const quickAmounts = ["0.01", "0.05", "0.1", "0.5", "1.0"];
 
-  // Convertir BigNumber strings a números para cálculos
-  const targetAmount = parseFloat(project.targetAmount) / 1e18; // Convertir de wei a ETH
-  const raisedAmount = parseFloat(project.raisedAmount) / 1e18; // Convertir de wei a ETH
+  // Convert BigNumber strings to numbers for calculations
+  const targetAmount = parseFloat(project.targetAmount) / 1e18; // Convert from wei to ETH
+  const raisedAmount = parseFloat(project.raisedAmount) / 1e18; // Convert from wei to ETH
   const remainingAmount = targetAmount - raisedAmount;
 
-  // Validar que el monto no exceda lo necesario
+  // Validate that the amount doesn't exceed what's needed
   const isValidAmount = (amount: string) => {
     const numAmount = parseFloat(amount);
     return numAmount > 0 && numAmount <= remainingAmount;
   };
 
-  // Obtener el monto final (seleccionado o personalizado)
+  // Get the final amount (selected or custom)
   const getFinalAmount = () => {
     if (customAmount && parseFloat(customAmount) > 0) {
       return customAmount;
@@ -41,34 +41,34 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
     return selectedAmount;
   };
 
-  // Manejar cambio de monto
+  // Handle amount change
   const handleAmountChange = (amount: string) => {
     setSelectedAmount(amount);
-    setCustomAmount(""); // Limpiar monto personalizado
+    setCustomAmount(""); // Clear custom amount
   };
 
-  // Manejar cambio de monto personalizado
+  // Handle custom amount change
   const handleCustomAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setCustomAmount(value);
-    setSelectedAmount(""); // Limpiar monto seleccionado
+    setSelectedAmount(""); // Clear selected amount
   };
 
-  // Removido: manejo de método de pago
+  // Removed: payment method handling
 
-  // Manejar envío del formulario
+  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const finalAmount = getFinalAmount();
 
     if (!isValidAmount(finalAmount)) {
-      alert("Por favor, ingresa un monto válido");
+      alert("Please enter a valid amount");
       return;
     }
 
     if (!donorName.trim()) {
-      alert("Por favor, ingresa tu nombre");
+      alert("Please enter your name");
       return;
     }
 
@@ -77,8 +77,8 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
       treeName: project.projectName,
       amount: finalAmount,
       donorName: donorName.trim(),
-      message: message.trim() || "¡Salvemos este árbol!",
-      // paymentMethod es opcional, se usa blockchain por defecto
+      message: message.trim() || "Let's save this tree!",
+      // paymentMethod is optional, blockchain used by default
     };
 
     onComplete(donationData);
@@ -91,56 +91,56 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
       <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <h2 className="text-xl font-bold text-gray-800">Rescatar {project.projectName}</h2>
+          <h2 className="text-xl font-bold text-gray-800">Rescue {project.projectName}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
             ✕
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6">
-          {/* Información del proyecto */}
+          {/* Project information */}
           <div className="mb-6 p-4 bg-green-50 rounded-lg">
-            <h3 className="font-semibold text-green-800 mb-2">Proyecto: {project.projectName}</h3>
+            <h3 className="font-semibold text-green-800 mb-2">Project: {project.projectName}</h3>
             <p className="text-sm text-green-700 mb-2">ONG: {project.ngoName}</p>
             <div className="text-sm text-green-600">
-              <span className="font-medium">Meta:</span> {targetAmount.toFixed(2)} ETH
+              <span className="font-medium">Goal:</span> {targetAmount.toFixed(2)} ETH
               <br />
-              <span className="font-medium">Recaudado:</span> {raisedAmount.toFixed(2)} ETH
+              <span className="font-medium">Raised:</span> {raisedAmount.toFixed(2)} ETH
               <br />
-              <span className="font-medium">Faltan:</span> {remainingAmount.toFixed(2)} ETH
+              <span className="font-medium">Needed:</span> {remainingAmount.toFixed(2)} ETH
             </div>
           </div>
 
-          {/* Nombre del donante */}
+          {/* Donor name */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Tu nombre *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Your name *</label>
             <input
               type="text"
               value={donorName}
               onChange={e => setDonorName(e.target.value)}
-              placeholder="Ingresa tu nombre completo"
+              placeholder="Enter your full name"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
               required
             />
           </div>
 
-          {/* Mensaje personalizado */}
+          {/* Custom message */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Mensaje (opcional)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Message (optional)</label>
             <textarea
               value={message}
               onChange={e => setMessage(e.target.value)}
-              placeholder="Escribe un mensaje para este proyecto..."
+              placeholder="Write a message for this project..."
               rows={3}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             />
           </div>
 
-          {/* Selección de monto */}
+          {/* Amount selection */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">Seleccioná el monto de tu donación:</label>
+            <label className="block text-sm font-medium text-gray-700 mb-3">Select your donation amount:</label>
 
-            {/* Montos rápidos */}
+            {/* Quick amounts */}
             <div className="grid grid-cols-3 gap-2 mb-3">
               {quickAmounts.map(amount => (
                 <button
@@ -158,13 +158,13 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
               ))}
             </div>
 
-            {/* Monto personalizado */}
+            {/* Custom amount */}
             <div className="relative">
               <input
                 type="number"
                 value={customAmount}
                 onChange={handleCustomAmountChange}
-                placeholder="O ingresa un monto personalizado"
+                placeholder="Or enter a custom amount"
                 step="0.01"
                 min="0.001"
                 max={remainingAmount}
@@ -173,65 +173,64 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
               <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">ETH</span>
             </div>
 
-            {/* Validación de monto */}
+            {/* Amount validation */}
             {customAmount && !isValidAmount(customAmount) && (
               <p className="text-red-500 text-sm mt-1">
-                El monto debe ser mayor a 0 y no exceder {remainingAmount.toFixed(2)} ETH
+                Amount must be greater than 0 and not exceed {remainingAmount.toFixed(2)} ETH
               </p>
             )}
           </div>
 
-          {/* Método de pago removido */}
+          {/* Payment method removed */}
 
           {/* Resumen */}
           <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-semibold text-gray-800 mb-2">Resumen de tu donación</h4>
+            <h4 className="font-semibold text-gray-800 mb-2">Your donation summary</h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span>Proyecto:</span>
+                <span>Project:</span>
                 <span className="font-medium">{project.projectName}</span>
               </div>
               <div className="flex justify-between">
-                <span>Monto:</span>
+                <span>Amount:</span>
                 <span className="font-medium text-green-600">{getFinalAmount()} ETH</span>
               </div>
               <div className="flex justify-between">
-                <span>Método:</span>
+                <span>Method:</span>
                 <span className="font-medium">⛓️ Blockchain</span>
               </div>
             </div>
           </div>
 
-          {/* Mensaje de transparencia */}
+          {/* Transparency message */}
           <div className="mb-6 p-4 bg-blue-50 rounded-lg">
             <div className="flex items-start">
               <div className="text-blue-600 text-lg mr-3">⛓️</div>
               <div>
-                <p className="text-sm text-blue-800 font-medium">Transacción Real en Blockchain</p>
+                <p className="text-sm text-blue-800 font-medium">Real Blockchain Transaction</p>
                 <p className="text-xs text-blue-600 mt-1">
-                  ⚠️ Esta es una donación REAL con ETH real. Tu MetaMask procesará la transacción en la blockchain de
-                  Lisk.
+                  ⚠️ This is a REAL donation with real ETH. Your MetaMask will process the transaction on the Lisk.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Estado de procesamiento */}
+          {/* Processing state */}
           {isProcessing && (
             <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
               <div className="flex items-center">
                 <GreenSpinner size="lg" className="mr-3" />
                 <div>
-                  <p className="text-sm text-green-800 font-medium">Procesando transacción...</p>
+                  <p className="text-sm text-green-800 font-medium">Processing transaction...</p>
                   <p className="text-xs text-green-600 mt-1">
-                    Por favor confirma la transacción en tu wallet y espera la confirmación.
+                    Please confirm the transaction in your wallet and wait for confirmation.
                   </p>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Botón de confirmación */}
+          {/* Confirmation button */}
           <button
             type="submit"
             disabled={isProcessing || !isValidAmount(getFinalAmount()) || !donorName.trim()}
@@ -244,10 +243,10 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
             {isProcessing ? (
               <div className="flex items-center justify-center">
                 <GreenSpinnerLight size="md" className="mr-2" />
-                Enviando a Blockchain...
+                Sending to Blockchain...
               </div>
             ) : (
-              "🌳 Rescatar con Blockchain"
+              "🌳 Rescue with Blockchain"
             )}
           </button>
         </form>

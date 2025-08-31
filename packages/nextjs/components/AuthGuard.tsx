@@ -32,7 +32,7 @@ const AuthGuard = ({ children, redirectTo = "/login" }: AuthGuardProps) => {
       if (chain?.id !== LISK_SEPOLIA_CHAIN_ID) {
         setIsAuthorized(false);
         setIsLoading(false);
-        toast.error("Debes estar conectado a Lisk Sepolia para acceder a esta página");
+        toast.error("You must be connected to Lisk Sepolia to access this page");
         router.push(redirectTo);
         return;
       }
@@ -41,7 +41,7 @@ const AuthGuard = ({ children, redirectTo = "/login" }: AuthGuardProps) => {
       setIsLoading(false);
     };
 
-    // Pequeño delay para asegurar que wagmi esté completamente inicializado
+    // Small delay to ensure wagmi is completely initialized
     const timer = setTimeout(checkAuth, 100);
     return () => clearTimeout(timer);
   }, [isConnected, address, chain, router, redirectTo]);
@@ -51,7 +51,7 @@ const AuthGuard = ({ children, redirectTo = "/login" }: AuthGuardProps) => {
       <div className="min-h-screen bg-gradient-to-br from-green-900 via-blue-900 to-purple-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-white mx-auto mb-4"></div>
-          <p className="text-white text-lg">Verificando autenticación...</p>
+          <p className="text-white text-lg">Verifying authentication...</p>
         </div>
       </div>
     );

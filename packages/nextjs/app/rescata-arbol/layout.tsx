@@ -2,13 +2,13 @@ import "./_styles/animations.css";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Rescatá un Árbol | Scaffold-Lisk",
+  title: "Rescue a Tree | GreenFi",
   description:
-    "Protegé el bosque y ayudá a combatir el cambio climático. Cada donación se registra en blockchain para máxima transparencia.",
-  keywords: "árboles, reforestación, blockchain, Lisk, Filecoin, medio ambiente, donación",
+    "Protect the forest and help combat climate change. Every donation is recorded on blockchain for maximum transparency.",
+  keywords: "trees, reforestation, blockchain, Lisk, Filecoin, environment, donation",
   openGraph: {
-    title: "Rescatá un Árbol | Protegé el Bosque",
-    description: "Protegé el bosque y ayudá a combatir el cambio climático con donaciones transparentes en blockchain.",
+    title: "Rescue a Tree | Protect the Forest",
+    description: "Protect the forest and help combat climate change with transparent blockchain donations.",
     images: ["/images/trees/forest-og.jpg"],
   },
 };
