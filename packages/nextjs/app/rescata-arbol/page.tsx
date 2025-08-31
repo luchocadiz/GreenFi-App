@@ -30,7 +30,6 @@ const RescataArbolPage = () => {
     isConfirming,
     donationHash,
     refreshProjects,
-    useSampleData,
     contractAddress,
     isContractReady,
   } = useDonationsContract();
@@ -301,7 +300,6 @@ const RescataArbolPage = () => {
         <ContractDebugInfo
           contractAddress={contractAddress || ""}
           isContractReady={isContractReady}
-          useSampleData={useSampleData}
           userAddress={userAddress}
         />
       )}
