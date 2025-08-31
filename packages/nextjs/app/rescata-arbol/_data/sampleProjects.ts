@@ -14,11 +14,12 @@ export const sampleProjects: TreeProject[] = [
     createdAt: Math.floor(Date.now() / 1000) - 86400 * 7, // 7 días atrás
     // Campos adicionales para la UI
     image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1000&auto=format&fit=crop",
-    description: "Una majestuosa ceiba de más de 200 años está en peligro por la expansión urbana. Necesitamos fondos para su protección y reubicación.",
+    description:
+      "Una majestuosa ceiba de más de 200 años está en peligro por la expansión urbana. Necesitamos fondos para su protección y reubicación.",
     location: "Córdoba, Argentina",
     impact: "Preservación de patrimonio natural",
     co2Capture: "3.2 toneladas/año",
-    urgency: "high"
+    urgency: "high",
   },
   {
     id: 2,
@@ -34,7 +35,7 @@ export const sampleProjects: TreeProject[] = [
     location: "Misiones, Argentina",
     impact: "Protección del pulmón verde",
     co2Capture: "5.5 toneladas/año",
-    urgency: "high"
+    urgency: "high",
   },
   {
     id: 3,
@@ -50,8 +51,8 @@ export const sampleProjects: TreeProject[] = [
     location: "Chaco, Argentina",
     impact: "Preservación de biodiversidad",
     co2Capture: "2.7 toneladas/año",
-    urgency: "high"
-  }
+    urgency: "high",
+  },
 ];
 
 // Función para obtener un proyecto de ejemplo por ID

@@ -9,9 +9,9 @@ import { TreeCard } from "./_components/TreeCard";
 import { useDonationsContract } from "./_hooks/useDonationsContract";
 import { useFilecoinStorage } from "./_hooks/useFilecoinStorage";
 import type { DonationData, TreeProject } from "./_types";
-import { useAuth } from "~~/hooks/useAuth";
 import { useAccount } from "wagmi";
 import { GreenSpinner } from "~~/components/GreenSpinner";
+import { useAuth } from "~~/hooks/useAuth";
 
 const RescataArbolPage = () => {
   const [selectedProject, setSelectedProject] = useState<TreeProject | null>(null);
@@ -143,10 +143,12 @@ const RescataArbolPage = () => {
                 <div className="text-center">
                   <div className="text-4xl mb-2">🌍</div>
                   <div className="text-2xl font-bold text-purple-600">
-                    {projects.reduce((total, project) => {
-                      const co2Value = parseFloat(project.co2Capture?.split(' ')[0] || '0');
-                      return total + co2Value;
-                    }, 0).toFixed(1)}
+                    {projects
+                      .reduce((total, project) => {
+                        const co2Value = parseFloat(project.co2Capture?.split(" ")[0] || "0");
+                        return total + co2Value;
+                      }, 0)
+                      .toFixed(1)}
                   </div>
                   <div className="text-gray-600">Toneladas CO2/año</div>
                 </div>
@@ -160,7 +162,7 @@ const RescataArbolPage = () => {
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-800 mb-4">Árboles que Necesitan tu Ayuda</h2>
             <p className="text-lg text-gray-600">Seleccioná un proyecto y contribuí a la conservación ambiental</p>
-            
+
             {/* Indicador de modo - SIEMPRE blockchain */}
             <div className="mt-4">
               <div className="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm">
@@ -168,7 +170,7 @@ const RescataArbolPage = () => {
                 Donaciones Reales en Blockchain
               </div>
             </div>
-            
+
             {contractAddress && (
               <div className="mt-2 text-xs text-gray-500">
                 Contrato: {contractAddress.slice(0, 6)}...{contractAddress.slice(-4)}
@@ -236,8 +238,8 @@ const RescataArbolPage = () => {
                 <div>
                   <h3 className="text-green-800 font-semibold mb-2">Donaciones Reales en Blockchain</h3>
                   <p className="text-green-700 text-sm mb-3">
-                    Todas las donaciones se procesan directamente en la blockchain a través de MetaMask. 
-                    Los proyectos mostrados son ejemplos de UI, pero las transacciones son reales.
+                    Todas las donaciones se procesan directamente en la blockchain a través de MetaMask. Los proyectos
+                    mostrados son ejemplos de UI, pero las transacciones son reales.
                   </p>
                   <div className="text-xs text-green-600">
                     💡 Conecta tu wallet y dona con ETH real - Las transacciones quedan registradas en blockchain
@@ -295,7 +297,7 @@ const RescataArbolPage = () => {
       )}
 
       {/* Componente de debug (solo en desarrollo) */}
-      {process.env.NODE_ENV !== 'production' && (
+      {process.env.NODE_ENV !== "production" && (
         <ContractDebugInfo
           contractAddress={contractAddress || ""}
           isContractReady={isContractReady}

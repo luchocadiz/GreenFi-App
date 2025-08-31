@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
@@ -26,7 +27,7 @@ export const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo y Título */}
           <Link href="/rescata-arbol" className="flex items-center space-x-3">
-            <img src="/image201.png" alt="GreenFi Logo" className="h-12" />
+            <Image src="/image201.png" alt="GreenFi Logo" width={150} height={150} />
           </Link>
 
           {/* Navegación */}

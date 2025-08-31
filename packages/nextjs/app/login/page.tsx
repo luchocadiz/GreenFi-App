@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { useAccount, useConnect, useDisconnect, useNetwork, useSwitchNetwork } from "wagmi";
@@ -120,7 +121,7 @@ const LoginPage = () => {
         {/* Encabezado con temática de árboles */}
         <div className="text-center mb-8">
           <div className="mb-4 animate-bounce">
-            <img src="/image201.png" alt="GreenFi Logo" className="h-20 mx-auto" />
+            <Image src="/image201.png" alt="GreenFi Logo" width={150} height={150} className="mx-auto" />
           </div>
           <h1 className="text-4xl font-bold text-gray-800 mb-2">Rescatá un Árbol</h1>
           <p className="text-lg text-gray-600 mb-2">Conectá tu wallet para comenzar</p>

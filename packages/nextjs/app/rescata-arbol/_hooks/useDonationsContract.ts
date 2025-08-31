@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
+import { sampleProjects } from "../_data/sampleProjects";
 import type { Donation, DonationData, TreeProject } from "../_types";
 import { parseEther } from "viem";
 import { useAccount, useContractRead, useContractWrite, usePublicClient, useWaitForTransaction } from "wagmi";
-import { sampleProjects } from "../_data/sampleProjects";
 import deployedContracts from "~~/contracts/deployedContracts";
 import { notification } from "~~/utils/scaffold-eth";
 
@@ -25,7 +25,7 @@ const getContractConfig = () => {
   // Verificar si existe la configuración del contrato en las redes disponibles
   const liskSepoliaConfig = deployedContracts[4202] as any;
   const localhostConfig = deployedContracts[31337] as any;
-  
+
   const config = liskSepoliaConfig?.NGODonations || localhostConfig?.NGODonations;
   return config;
 };
@@ -81,7 +81,7 @@ export const useDonationsContract = () => {
     onSuccess: () => {
       notification.success("¡Donación enviada exitosamente!");
     },
-    onError: (error) => {
+    onError: error => {
       console.error("Error al realizar donación:", error);
       notification.error("Error al procesar la donación");
     },
@@ -90,22 +90,21 @@ export const useDonationsContract = () => {
   // Esperar a que se confirme la transacción
   const { isLoading: isConfirming, isSuccess: isDonationSuccess } = useWaitForTransaction({
     hash: donateData?.hash,
-    onSuccess: (data) => {
+    onSuccess: data => {
       console.log("🎉 Transacción confirmada:", data);
-      
+
       // Buscar el evento DonationReceived en los logs para obtener información adicional
       const donationEvent = data.logs?.find(
-        (log: any) => log.topics && log.topics[0] && 
-        log.topics[0].includes("DonationReceived")
+        (log: any) => log.topics && log.topics[0] && log.topics[0].includes("DonationReceived"),
       );
-      
+
       if (donationEvent) {
         console.log("📧 Evento de donación encontrado:", donationEvent);
         notification.success("¡Donación confirmada en blockchain! 🎉");
       } else {
         notification.success("¡Donación procesada exitosamente!");
       }
-      
+
       // Actualizar los datos del proyecto después de una donación exitosa
       if (!useSampleData) {
         // Recargar proyectos desde el contrato para obtener los datos actualizados
@@ -115,7 +114,7 @@ export const useDonationsContract = () => {
         }, 2000);
       }
     },
-    onError: (error) => {
+    onError: error => {
       console.error("❌ Error en la confirmación de transacción:", error);
       notification.error("Error al confirmar la transacción");
     },
@@ -130,7 +129,10 @@ export const useDonationsContract = () => {
           return null;
         }
 
-        if (!DONATIONS_CONTRACT_ADDRESS || DONATIONS_CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000") {
+        if (
+          !DONATIONS_CONTRACT_ADDRESS ||
+          DONATIONS_CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000"
+        ) {
           console.warn("Dirección del contrato no configurada");
           return null;
         }
@@ -165,13 +167,13 @@ export const useDonationsContract = () => {
   // Cargar todos los proyectos
   const loadProjects = useCallback(async () => {
     console.log("🔄 Cargando proyectos...");
-    
+
     // SIEMPRE mostrar proyectos de ejemplo como UI, pero SIEMPRE usar blockchain para donaciones
     setProjects(sampleProjects);
     setUseSampleData(false); // NUNCA simular, siempre usar blockchain real
     setIsLoading(false);
     setError(null);
-    
+
     // Si hay contrato disponible, intentar cargar proyectos reales también
     if (contractConfig && nextProjectId && Number(nextProjectId) > 0) {
       console.log("🔗 Intentando cargar proyectos del contrato...");
@@ -213,7 +215,7 @@ export const useDonationsContract = () => {
     } else {
       console.log("📋 No hay proyectos en el contrato, usando solo proyectos de ejemplo para UI");
     }
-  }, [nextProjectId, loadProject, contractConfig]);
+  }, [nextProjectId, loadProject]);
 
   // Cargar donaciones de un proyecto
   const loadProjectDonations = useCallback(
@@ -224,7 +226,10 @@ export const useDonationsContract = () => {
           return [];
         }
 
-        if (!DONATIONS_CONTRACT_ADDRESS || DONATIONS_CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000") {
+        if (
+          !DONATIONS_CONTRACT_ADDRESS ||
+          DONATIONS_CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000"
+        ) {
           console.warn("Dirección del contrato no configurada");
           return [];
         }
@@ -255,7 +260,7 @@ export const useDonationsContract = () => {
   const makeDonation = useCallback(
     async (donationData: DonationData) => {
       console.log("🚀 Iniciando donación REAL en blockchain:", donationData);
-      
+
       if (!userAddress) {
         notification.error("Por favor conecta tu wallet con MetaMask");
         throw new Error("Usuario no conectado");
@@ -277,7 +282,7 @@ export const useDonationsContract = () => {
         address: DONATIONS_CONTRACT_ADDRESS,
         contractConfig: !!contractConfig,
         donateFunction: !!donate,
-        userAddress: userAddress
+        userAddress: userAddress,
       });
 
       if (!contractConfig || !contractConfig.address) {
@@ -297,26 +302,25 @@ export const useDonationsContract = () => {
           projectId: BigInt(donationData.projectId),
           donorName: donationData.donorName,
           message: donationData.message || "¡Salvemos este árbol!",
-          value: amountInWei.toString()
+          value: amountInWei.toString(),
         });
 
         notification.info("🔄 Enviando transacción a blockchain... Confirma en MetaMask");
 
         const tx = await donate({
           args: [
-            BigInt(donationData.projectId), 
-            donationData.donorName, 
-            donationData.message || "¡Salvemos este árbol!"
+            BigInt(donationData.projectId),
+            donationData.donorName,
+            donationData.message || "¡Salvemos este árbol!",
           ],
           value: amountInWei,
         });
 
         console.log("✅ Transacción enviada a blockchain:", tx);
         notification.success("🎉 Transacción enviada! Esperando confirmación...");
-        
       } catch (err: any) {
         console.error("❌ Error making donation:", err);
-        
+
         // Manejar diferentes tipos de errores
         if (err?.message?.includes("User rejected") || err?.message?.includes("user rejected")) {
           notification.error("❌ Transacción cancelada por el usuario");
@@ -333,11 +337,11 @@ export const useDonationsContract = () => {
         } else {
           notification.error(`❌ Error: ${err?.message || "Error desconocido en blockchain"}`);
         }
-        
+
         throw err;
       }
     },
-    [donate, userAddress, contractConfig],
+    [donate, userAddress],
   );
 
   // Cargar proyectos cuando cambie nextProjectId
@@ -426,7 +430,7 @@ export const useDonationsContract = () => {
     } else {
       console.warn("⚠️ Contrato no configurado - verifica el deployment");
     }
-  }, [contractConfig, userAddress, useSampleData]);
+  }, [userAddress, useSampleData]);
 
   return {
     // Estado
@@ -450,7 +454,7 @@ export const useDonationsContract = () => {
     // Utilidades
     refreshProjects: loadProjects,
     contractAddress: DONATIONS_CONTRACT_ADDRESS,
-    
+
     // Debug info
     contractConfig,
     isContractReady: !!contractConfig && !!contractConfig.address,

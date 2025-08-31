@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { DonationData, PaymentMethod, TreeProject } from "../_types";
+import type { DonationData, TreeProject } from "../_types";
 import { GreenSpinner, GreenSpinnerLight } from "~~/components/GreenSpinner";
 
 interface CheckoutModalProps {
@@ -209,7 +209,8 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
               <div>
                 <p className="text-sm text-blue-800 font-medium">Transacción Real en Blockchain</p>
                 <p className="text-xs text-blue-600 mt-1">
-                  ⚠️ Esta es una donación REAL con ETH real. Tu MetaMask procesará la transacción en la blockchain de Lisk.
+                  ⚠️ Esta es una donación REAL con ETH real. Tu MetaMask procesará la transacción en la blockchain de
+                  Lisk.
                 </p>
               </div>
             </div>
