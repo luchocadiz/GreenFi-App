@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { DonationData, PaymentMethod, TreeProject } from "../_types";
+import { GreenSpinner, GreenSpinnerLight } from "~~/components/GreenSpinner";
 
 interface CheckoutModalProps {
   project: TreeProject;
@@ -216,12 +217,12 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
 
           {/* Estado de procesamiento */}
           {isProcessing && (
-            <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
               <div className="flex items-center">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-600 mr-3"></div>
+                <GreenSpinner size="lg" className="mr-3" />
                 <div>
-                  <p className="text-sm text-yellow-800 font-medium">Procesando transacción...</p>
-                  <p className="text-xs text-yellow-600 mt-1">
+                  <p className="text-sm text-green-800 font-medium">Procesando transacción...</p>
+                  <p className="text-xs text-green-600 mt-1">
                     Por favor confirma la transacción en tu wallet y espera la confirmación.
                   </p>
                 </div>
@@ -241,7 +242,7 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
           >
             {isProcessing ? (
               <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                <GreenSpinnerLight size="md" className="mr-2" />
                 Enviando a Blockchain...
               </div>
             ) : (

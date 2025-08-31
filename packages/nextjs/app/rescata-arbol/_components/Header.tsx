@@ -1,10 +1,24 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useDisconnect } from "wagmi";
+import { toast } from "react-hot-toast";
 import { useAuth } from "~~/hooks/useAuth";
 
 export const Header = () => {
   const { isAuthenticated, userAddress } = useAuth();
+  const router = useRouter();
+  const { disconnect } = useDisconnect();
+
+  const handleDisconnect = () => {
+    disconnect();
+    toast.success("Wallet desconectada exitosamente 👋");
+    // Redirigir al login después de un breve delay
+    setTimeout(() => {
+      router.push("/login");
+    }, 1000);
+  };
 
   return (
     <header className="bg-white/80 backdrop-blur-md border-b border-green-100 sticky top-0 z-50">
@@ -14,7 +28,7 @@ export const Header = () => {
           <Link href="/rescata-arbol" className="flex items-center space-x-3">
             <div className="text-3xl">🌱</div>
             <div>
-              <h1 className="text-xl font-bold text-gray-800">Rescatá un Árbol</h1>
+              <h1 className="text-xl font-bold text-gray-800">GreenFi</h1>
               <p className="text-sm text-gray-600">Protegé el bosque</p>
             </div>
           </Link>
@@ -60,13 +74,14 @@ export const Header = () => {
               <div className="text-sm text-gray-500">No conectado</div>
             )}
 
-            {/* Botón de Volver */}
-            <Link
-              href="/"
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+            {/* Botón de Desconectar */}
+            <button
+              onClick={handleDisconnect}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors font-medium flex items-center space-x-2"
             >
-              Volver al App
-            </Link>
+              <span>🔌</span>
+              <span>Desconectar</span>
+            </button>
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { useAccount, useConnect, useDisconnect, useNetwork, useSwitchNetwork } from "wagmi";
+import { GreenSpinnerLight } from "~~/components/GreenSpinner";
 
 const LoginPage = () => {
   const [isConnecting, setIsConnecting] = useState(false);
@@ -154,7 +155,7 @@ const LoginPage = () => {
             >
               {isConnecting || isConnectingWallet ? (
                 <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  <GreenSpinnerLight size="md" className="mr-2" />
                   Conectando wallet...
                 </div>
               ) : (
