@@ -91,7 +91,7 @@ export const ConfirmationModal = ({ donationData, isOpen, onClose }: Confirmatio
               </div>
               <div className="flex justify-between">
                 <span className="text-green-700">Monto donado:</span>
-                <span className="font-bold text-green-800">{donationData.amount} ETH</span>
+                <span className="font-bold text-green-800">{donationData.amount} LSK</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-green-700">Método de pago:</span>

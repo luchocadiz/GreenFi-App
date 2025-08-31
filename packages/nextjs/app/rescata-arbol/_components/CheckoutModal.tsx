@@ -19,7 +19,7 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
   const [message, setMessage] = useState<string>("");
   // Removido: método de pago ya no es necesario
 
-  // Montos rápidos en ETH
+  // Montos rápidos en LSK
   const quickAmounts = ["0.01", "0.05", "0.1", "0.5", "1.0"];
 
   // Convertir BigNumber strings a números para cálculos
@@ -103,11 +103,11 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
             <h3 className="font-semibold text-green-800 mb-2">Project: {project.projectName}</h3>
             <p className="text-sm text-green-700 mb-2">ONG: {project.ngoName}</p>
             <div className="text-sm text-green-600">
-              <span className="font-medium">Target:</span> {targetAmount.toFixed(2)} ETH
+              <span className="font-medium">Target:</span> {targetAmount.toFixed(2)} LSK
               <br />
-              <span className="font-medium">Raised:</span> {raisedAmount.toFixed(2)} ETH
+              <span className="font-medium">Raised:</span> {raisedAmount.toFixed(2)} LSK
               <br />
-              <span className="font-medium">Remaining:</span> {remainingAmount.toFixed(2)} ETH
+              <span className="font-medium">Remaining:</span> {remainingAmount.toFixed(2)} LSK
             </div>
           </div>
 
@@ -153,7 +153,7 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
-                  {amount} ETH
+                  {amount} LSK
                 </button>
               ))}
             </div>
@@ -170,13 +170,13 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
                 max={remainingAmount}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
               />
-              <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">ETH</span>
+              <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">LSK</span>
             </div>
 
             {/* Validación de monto */}
             {customAmount && !isValidAmount(customAmount) && (
               <p className="text-red-500 text-sm mt-1">
-                Amount must be greater than 0 and not exceed {remainingAmount.toFixed(2)} ETH
+                Amount must be greater than 0 and not exceed {remainingAmount.toFixed(2)} LSK
               </p>
             )}
           </div>
@@ -193,7 +193,7 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
               </div>
               <div className="flex justify-between">
                 <span>Amount:</span>
-                <span className="font-medium text-green-600">{getFinalAmount()} ETH</span>
+                <span className="font-medium text-green-600">{getFinalAmount()} LSK</span>
               </div>
               <div className="flex justify-between">
                 <span>Method:</span>
@@ -209,7 +209,7 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
               <div>
                 <p className="text-sm text-blue-800 font-medium">Real Transaction on Blockchain</p>
                 <p className="text-xs text-blue-600 mt-1">
-                  ⚠️ This is a REAL donation with real ETH. Your MetaMask will process the transaction on the Lisk
+                  ⚠️ This is a REAL donation with real LSK. Your MetaMask will process the transaction on the Lisk
                   blockchain.
                 </p>
               </div>

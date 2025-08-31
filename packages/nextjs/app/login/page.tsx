@@ -141,7 +141,7 @@ const LoginPage = () => {
                 <div>
                   <div className="text-2xl mb-1">💚</div>
                   <div className="text-lg font-bold text-green-700">9.8</div>
-                  <div className="text-xs text-green-600">ETH Target</div>
+                  <div className="text-xs text-green-600">LSK Target</div>
                 </div>
                 <div>
                   <div className="text-2xl mb-1">🌍</div>

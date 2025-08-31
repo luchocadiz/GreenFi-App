@@ -135,7 +135,7 @@ const RescataArbolPage = () => {
                         return total + raised;
                       }, 0)
                       .toFixed(2)}{" "}
-                    ETH
+                    LSK
                   </div>
                   <div className="text-gray-600">Total Raised</div>
                 </div>
@@ -241,7 +241,7 @@ const RescataArbolPage = () => {
                     examples, but transactions are real.
                   </p>
                   <div className="text-xs text-green-600">
-                    💡 Connect your wallet and donate with real ETH - Transactions are recorded on blockchain
+                    💡 Connect your wallet and donate with real LSK - Transactions are recorded on blockchain
                   </div>
                 </div>
               </div>

@@ -131,8 +131,8 @@ export const TreeCard = ({ project, onRescue }: TreeCardProps) => {
         {/* Fundraising progress */}
         <div className="mb-4">
           <div className="flex justify-between text-sm text-gray-600 mb-2">
-            <span>Raised: {raisedAmount.toFixed(2)} ETH</span>
-            <span>Target: {targetAmount.toFixed(2)} ETH</span>
+            <span>Raised: {raisedAmount.toFixed(2)} LSK</span>
+            <span>Target: {targetAmount.toFixed(2)} LSK</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
@@ -145,7 +145,7 @@ export const TreeCard = ({ project, onRescue }: TreeCardProps) => {
 
         {/* Remaining amount */}
         <div className="text-center mb-4">
-          <div className="text-lg font-bold text-green-600">Remaining {remainingAmount.toFixed(2)} ETH</div>
+          <div className="text-lg font-bold text-green-600">Remaining {remainingAmount.toFixed(2)} LSK</div>
           <div className="text-sm text-gray-600">to complete the project</div>
         </div>
 
