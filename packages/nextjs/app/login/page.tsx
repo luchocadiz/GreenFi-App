@@ -107,7 +107,7 @@ const LoginPage = () => {
         <div className="absolute -top-4 -left-4 w-72 h-72 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
         <div className="absolute -top-4 -right-4 w-72 h-72 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse delay-1000"></div>
         <div className="absolute -bottom-8 left-20 w-72 h-72 bg-teal-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse delay-2000"></div>
-        
+
         {/* Árboles flotantes decorativos */}
         <div className="absolute top-20 left-10 text-4xl opacity-20 animate-bounce delay-500">🌲</div>
         <div className="absolute top-32 right-16 text-3xl opacity-15 animate-bounce delay-1000">🌳</div>
@@ -119,7 +119,9 @@ const LoginPage = () => {
       <div className="relative bg-white/90 backdrop-blur-lg rounded-3xl p-8 max-w-md w-full border border-green-100 shadow-2xl">
         {/* Encabezado con temática de árboles */}
         <div className="text-center mb-8">
-          <div className="text-6xl mb-4 animate-bounce">🌳</div>
+          <div className="mb-4 animate-bounce">
+            <img src="/image201.png" alt="GreenFi Logo" className="h-20 mx-auto" />
+          </div>
           <h1 className="text-4xl font-bold text-gray-800 mb-2">Rescatá un Árbol</h1>
           <p className="text-lg text-gray-600 mb-2">Conectá tu wallet para comenzar</p>
           <p className="text-sm text-green-600">🌱 Cada donación cuenta para salvar nuestros bosques</p>
@@ -196,12 +198,12 @@ const LoginPage = () => {
                 <div className="text-4xl mb-2">🎉</div>
                 <h3 className="text-xl font-bold text-green-800">¡Wallet Conectada!</h3>
               </div>
-              
+
               <div className="flex items-center justify-center space-x-2 text-green-700 mb-3">
                 <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
                 <span className="font-semibold">Conectado exitosamente</span>
               </div>
-              
+
               <div className="bg-white rounded-xl p-3 border border-green-100">
                 <p className="text-sm text-gray-600 text-center">
                   <span className="font-mono bg-gray-100 px-2 py-1 rounded">
@@ -217,17 +219,18 @@ const LoginPage = () => {
                   <div className="text-4xl mb-2">⚠️</div>
                   <h3 className="text-xl font-bold text-orange-800">Red Incorrecta</h3>
                 </div>
-                
+
                 <div className="flex items-center justify-center space-x-2 text-orange-700 mb-3">
                   <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
                   <span className="font-semibold">Cambio de red requerido</span>
                 </div>
-                
+
                 <p className="text-sm text-orange-700 mb-4 text-center">
-                  Conectado a: <strong>{chain?.name || "red desconocida"}</strong><br/>
+                  Conectado a: <strong>{chain?.name || "red desconocida"}</strong>
+                  <br />
                   Necesitas cambiar a <strong>Lisk Sepolia</strong> para rescatar árboles.
                 </p>
-                
+
                 <button
                   onClick={handleSwitchToLiskSepolia}
                   className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-3 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105"
@@ -241,15 +244,13 @@ const LoginPage = () => {
                   <div className="text-4xl mb-2">✅</div>
                   <h3 className="text-xl font-bold text-emerald-800">¡Todo Listo!</h3>
                 </div>
-                
+
                 <div className="flex items-center justify-center space-x-2 text-emerald-700 mb-3">
                   <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
                   <span className="font-semibold">Lisk Sepolia Testnet</span>
                 </div>
-                
-                <p className="text-sm text-emerald-700 text-center">
-                  🌳 Ya podés comenzar a rescatar árboles
-                </p>
+
+                <p className="text-sm text-emerald-700 text-center">🌳 Ya podés comenzar a rescatar árboles</p>
               </div>
             )}
 

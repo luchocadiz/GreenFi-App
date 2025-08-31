@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useDisconnect } from "wagmi";
 import { toast } from "react-hot-toast";
+import { useDisconnect } from "wagmi";
 import { useAuth } from "~~/hooks/useAuth";
 
 export const Header = () => {
@@ -26,11 +26,7 @@ export const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo y Título */}
           <Link href="/rescata-arbol" className="flex items-center space-x-3">
-            <div className="text-3xl">🌱</div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-800">GreenFi</h1>
-              <p className="text-sm text-gray-600">Protegé el bosque</p>
-            </div>
+            <img src="/image201.png" alt="GreenFi Logo" className="h-12" />
           </Link>
 
           {/* Navegación */}
