@@ -132,17 +132,17 @@ const LoginPage = () => {
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
                   <div className="text-2xl mb-1">🌳</div>
-                  <div className="text-lg font-bold text-green-700">6</div>
+                  <div className="text-lg font-bold text-green-700">3</div>
                   <div className="text-xs text-green-600">Proyectos</div>
                 </div>
                 <div>
                   <div className="text-2xl mb-1">💚</div>
-                  <div className="text-lg font-bold text-green-700">15.2</div>
-                  <div className="text-xs text-green-600">ETH Donados</div>
+                  <div className="text-lg font-bold text-green-700">9.8</div>
+                  <div className="text-xs text-green-600">ETH Objetivo</div>
                 </div>
                 <div>
                   <div className="text-2xl mb-1">🌍</div>
-                  <div className="text-lg font-bold text-green-700">15</div>
+                  <div className="text-lg font-bold text-green-700">11.4</div>
                   <div className="text-xs text-green-600">Ton CO2/año</div>
                 </div>
               </div>
