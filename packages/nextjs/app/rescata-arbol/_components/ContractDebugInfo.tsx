@@ -70,7 +70,7 @@ export const ContractDebugInfo = ({ contractAddress, isContractReady, userAddres
                 • Donaciones van al contrato real
                 <br />
                 • MetaMask procesa transacciones
-                <br />• ETH real se envía a blockchain
+                <br />• LSK real se envía a blockchain
               </div>
             </div>
 

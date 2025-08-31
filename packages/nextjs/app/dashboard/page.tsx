@@ -49,7 +49,7 @@ const DashboardPage = () => {
                 </div>
                 <div className="text-center">
                   <p className="text-3xl font-bold text-yellow-400 mb-2">--</p>
-                  <p className="text-gray-400 text-sm">ETH en Lisk Sepolia</p>
+                  <p className="text-gray-400 text-sm">LSK en Lisk Sepolia</p>
                 </div>
               </div>
 

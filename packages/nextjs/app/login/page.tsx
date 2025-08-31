@@ -123,9 +123,9 @@ const LoginPage = () => {
           <div className="mb-4 animate-bounce">
             <Image src="/image201.png" alt="GreenFi Logo" width={150} height={150} className="mx-auto" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Rescatá un Árbol</h1>
-          <p className="text-lg text-gray-600 mb-2">Conectá tu wallet para comenzar</p>
-          <p className="text-sm text-green-600">🌱 Cada donación cuenta para salvar nuestros bosques</p>
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">Save a Tree</h1>
+          <p className="text-lg text-gray-600 mb-2">Connect your wallet to get started</p>
+          <p className="text-sm text-green-600">🌱 Every donation counts to save our forests</p>
         </div>
 
         {!isConnected ? (
@@ -136,17 +136,17 @@ const LoginPage = () => {
                 <div>
                   <div className="text-2xl mb-1">🌳</div>
                   <div className="text-lg font-bold text-green-700">3</div>
-                  <div className="text-xs text-green-600">Proyectos</div>
+                  <div className="text-xs text-green-600">Projects</div>
                 </div>
                 <div>
                   <div className="text-2xl mb-1">💚</div>
                   <div className="text-lg font-bold text-green-700">9.8</div>
-                  <div className="text-xs text-green-600">ETH Objetivo</div>
+                  <div className="text-xs text-green-600">LSK Target</div>
                 </div>
                 <div>
                   <div className="text-2xl mb-1">🌍</div>
                   <div className="text-lg font-bold text-green-700">11.4</div>
-                  <div className="text-xs text-green-600">Ton CO2/año</div>
+                  <div className="text-xs text-green-600">Tons CO2/year</div>
                 </div>
               </div>
             </div>
@@ -159,12 +159,12 @@ const LoginPage = () => {
               {isConnecting || isConnectingWallet ? (
                 <div className="flex items-center justify-center">
                   <GreenSpinnerLight size="md" className="mr-2" />
-                  Conectando wallet...
+                  Connecting wallet...
                 </div>
               ) : (
                 <div className="flex items-center justify-center">
                   <span className="mr-2">🦊</span>
-                  Conectar con MetaMask
+                  Connect with MetaMask
                 </div>
               )}
             </button>
@@ -175,19 +175,19 @@ const LoginPage = () => {
             >
               <div className="flex items-center justify-center">
                 <span className="mr-2">⚙️</span>
-                Configurar Red Lisk
+                Configure Lisk Network
               </div>
             </button>
 
             <div className="text-center text-sm text-gray-500 mt-4 bg-gray-50 rounded-xl p-4">
-              <p className="mb-2">¿No tienes MetaMask?</p>
+              <p className="mb-2">Don&apos;t have MetaMask?</p>
               <a
                 href="https://metamask.io/download/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-green-600 hover:text-green-700 underline font-semibold"
               >
-                📥 Descárgalo gratis aquí
+                📥 Download it free here
               </a>
             </div>
           </div>
@@ -197,12 +197,12 @@ const LoginPage = () => {
             <div className="bg-green-50 border border-green-200 rounded-2xl p-6">
               <div className="text-center mb-4">
                 <div className="text-4xl mb-2">🎉</div>
-                <h3 className="text-xl font-bold text-green-800">¡Wallet Conectada!</h3>
+                <h3 className="text-xl font-bold text-green-800">Wallet Connected!</h3>
               </div>
 
               <div className="flex items-center justify-center space-x-2 text-green-700 mb-3">
                 <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="font-semibold">Conectado exitosamente</span>
+                <span className="font-semibold">Successfully connected</span>
               </div>
 
               <div className="bg-white rounded-xl p-3 border border-green-100">
@@ -218,32 +218,32 @@ const LoginPage = () => {
               <div className="bg-orange-50 border border-orange-200 rounded-2xl p-6">
                 <div className="text-center mb-4">
                   <div className="text-4xl mb-2">⚠️</div>
-                  <h3 className="text-xl font-bold text-orange-800">Red Incorrecta</h3>
+                  <h3 className="text-xl font-bold text-orange-800">Wrong Network</h3>
                 </div>
 
                 <div className="flex items-center justify-center space-x-2 text-orange-700 mb-3">
                   <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
-                  <span className="font-semibold">Cambio de red requerido</span>
+                  <span className="font-semibold">Network switch required</span>
                 </div>
 
                 <p className="text-sm text-orange-700 mb-4 text-center">
-                  Conectado a: <strong>{chain?.name || "red desconocida"}</strong>
+                  Connected to: <strong>{chain?.name || "unknown network"}</strong>
                   <br />
-                  Necesitas cambiar a <strong>Lisk Sepolia</strong> para rescatar árboles.
+                  You need to switch to <strong>Lisk Sepolia</strong> to save trees.
                 </p>
 
                 <button
                   onClick={handleSwitchToLiskSepolia}
                   className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-3 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105"
                 >
-                  🔄 Cambiar a Lisk Sepolia
+                  🔄 Switch to Lisk Sepolia
                 </button>
               </div>
             ) : (
               <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
                 <div className="text-center mb-4">
                   <div className="text-4xl mb-2">✅</div>
-                  <h3 className="text-xl font-bold text-emerald-800">¡Todo Listo!</h3>
+                  <h3 className="text-xl font-bold text-emerald-800">All Set!</h3>
                 </div>
 
                 <div className="flex items-center justify-center space-x-2 text-emerald-700 mb-3">
@@ -251,7 +251,7 @@ const LoginPage = () => {
                   <span className="font-semibold">Lisk Sepolia Testnet</span>
                 </div>
 
-                <p className="text-sm text-emerald-700 text-center">🌳 Ya podés comenzar a rescatar árboles</p>
+                <p className="text-sm text-emerald-700 text-center">🌳 You can now start saving trees</p>
               </div>
             )}
 
@@ -259,7 +259,7 @@ const LoginPage = () => {
               onClick={handleDisconnect}
               className="w-full bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-semibold py-3 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105"
             >
-              🔌 Desconectar Wallet
+              🔌 Disconnect Wallet
             </button>
           </div>
         )}
@@ -271,8 +271,8 @@ const LoginPage = () => {
                 <span className="text-5xl">🌳</span>
               </div>
               <div className="animate-pulse">
-                <p className="text-green-800 font-bold text-lg mb-2">¡Bienvenido al rescate!</p>
-                <p className="text-green-600 text-sm">Redirigiendo a los proyectos de árboles...</p>
+                <p className="text-green-800 font-bold text-lg mb-2">Welcome to the rescue!</p>
+                <p className="text-green-600 text-sm">Redirecting to tree projects...</p>
               </div>
             </div>
           </div>
