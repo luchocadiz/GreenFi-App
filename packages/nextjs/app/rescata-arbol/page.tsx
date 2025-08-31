@@ -142,7 +142,12 @@ const RescataArbolPage = () => {
                 </div>
                 <div className="text-center">
                   <div className="text-4xl mb-2">🌍</div>
-                  <div className="text-2xl font-bold text-purple-600">{projects.length * 2.5}</div>
+                  <div className="text-2xl font-bold text-purple-600">
+                    {projects.reduce((total, project) => {
+                      const co2Value = parseFloat(project.co2Capture?.split(' ')[0] || '0');
+                      return total + co2Value;
+                    }, 0).toFixed(1)}
+                  </div>
                   <div className="text-gray-600">Toneladas CO2/año</div>
                 </div>
               </div>

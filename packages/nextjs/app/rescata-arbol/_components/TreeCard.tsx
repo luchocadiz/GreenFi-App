@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type { TreeProject } from "../_types";
 
 interface TreeCardProps {
@@ -56,11 +57,26 @@ export const TreeCard = ({ project, onRescue }: TreeCardProps) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Imagen del proyecto */}
-      <div className="relative h-48 bg-gradient-to-br from-green-400 to-green-600 overflow-hidden">
+      <div className="relative h-48 overflow-hidden">
+        {project.image ? (
+          <Image
+            src={project.image}
+            alt={project.projectName}
+            fill
+            className="object-cover transition-transform duration-300 hover:scale-110"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            onError={() => {
+              // En caso de error, mostrar fallback
+              console.log(`Error cargando imagen para ${project.projectName}`);
+            }}
+          />
+        ) : (
+          // Fallback con emoji si no hay imagen
+          <div className="w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+            <div className="text-6xl">🌳</div>
+          </div>
+        )}
         <div className="absolute inset-0 bg-black bg-opacity-20" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-6xl">🌳</div>
-        </div>
 
         {/* Badge de urgencia */}
         <div
