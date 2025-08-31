@@ -204,15 +204,30 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
           {/* Mensaje de transparencia */}
           <div className="mb-6 p-4 bg-blue-50 rounded-lg">
             <div className="flex items-start">
-              <div className="text-blue-600 text-lg mr-3">🔒</div>
+              <div className="text-blue-600 text-lg mr-3">⛓️</div>
               <div>
-                <p className="text-sm text-blue-800 font-medium">Tu identidad está protegida</p>
+                <p className="text-sm text-blue-800 font-medium">Transacción Real en Blockchain</p>
                 <p className="text-xs text-blue-600 mt-1">
-                  Tu donación se registra en blockchain para transparencia sin que tengas que entender la tecnología.
+                  ⚠️ Esta es una donación REAL con ETH real. Tu MetaMask procesará la transacción en la blockchain de Lisk.
                 </p>
               </div>
             </div>
           </div>
+
+          {/* Estado de procesamiento */}
+          {isProcessing && (
+            <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-600 mr-3"></div>
+                <div>
+                  <p className="text-sm text-yellow-800 font-medium">Procesando transacción...</p>
+                  <p className="text-xs text-yellow-600 mt-1">
+                    Por favor confirma la transacción en tu wallet y espera la confirmación.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Botón de confirmación */}
           <button
@@ -227,10 +242,10 @@ export const CheckoutModal = ({ project, isOpen, onClose, onComplete, isProcessi
             {isProcessing ? (
               <div className="flex items-center justify-center">
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Procesando...
+                Enviando a Blockchain...
               </div>
             ) : (
-              "Confirmar Rescate"
+              "🌳 Rescatar con Blockchain"
             )}
           </button>
         </form>

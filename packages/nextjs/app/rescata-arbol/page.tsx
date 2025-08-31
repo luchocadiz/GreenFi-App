@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { CheckoutModal } from "./_components/CheckoutModal";
 import { ConfirmationModal } from "./_components/ConfirmationModal";
+import { ContractDebugInfo } from "./_components/ContractDebugInfo";
 import { Header } from "./_components/Header";
 import { TreeCard } from "./_components/TreeCard";
 import { useDonationsContract } from "./_hooks/useDonationsContract";
 import { useFilecoinStorage } from "./_hooks/useFilecoinStorage";
 import type { DonationData, TreeProject } from "./_types";
 import { useAuth } from "~~/hooks/useAuth";
+import { useAccount } from "wagmi";
 
 const RescataArbolPage = () => {
   const [selectedProject, setSelectedProject] = useState<TreeProject | null>(null);
@@ -17,6 +19,7 @@ const RescataArbolPage = () => {
   const [donationData, setDonationData] = useState<DonationData | null>(null);
 
   const { isAuthenticated } = useAuth();
+  const { address: userAddress } = useAccount();
   const {
     projects,
     isLoading: isLoadingProjects,
@@ -28,6 +31,7 @@ const RescataArbolPage = () => {
     refreshProjects,
     useSampleData,
     contractAddress,
+    isContractReady,
   } = useDonationsContract();
   const { uploadToFilecoin } = useFilecoinStorage();
 
@@ -151,24 +155,22 @@ const RescataArbolPage = () => {
             <h2 className="text-4xl font-bold text-gray-800 mb-4">Árboles que Necesitan tu Ayuda</h2>
             <p className="text-lg text-gray-600">Seleccioná un proyecto y contribuí a la conservación ambiental</p>
             
-            {/* Indicador de modo */}
+            {/* Indicador de modo - SIEMPRE blockchain */}
             <div className="mt-4">
-              {useSampleData ? (
-                <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm">
-                  <span className="mr-2">🎭</span>
-                  Modo Demo - Proyectos de Ejemplo
-                </div>
-              ) : (
-                <div className="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm">
-                  <span className="mr-2">⛓️</span>
-                  Datos en vivo desde Blockchain
-                </div>
-              )}
+              <div className="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm">
+                <span className="mr-2">⛓️</span>
+                Donaciones Reales en Blockchain
+              </div>
             </div>
             
             {contractAddress && (
               <div className="mt-2 text-xs text-gray-500">
                 Contrato: {contractAddress.slice(0, 6)}...{contractAddress.slice(-4)}
+                {isContractReady ? (
+                  <span className="ml-2 text-green-600">✅ Listo</span>
+                ) : (
+                  <span className="ml-2 text-red-600">❌ No configurado</span>
+                )}
               </div>
             )}
           </div>
@@ -220,19 +222,19 @@ const RescataArbolPage = () => {
             </div>
           )}
 
-          {/* Información sobre el modo demo */}
-          {useSampleData && projects.length > 0 && (
-            <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+          {/* Información sobre donaciones reales */}
+          {projects.length > 0 && (
+            <div className="mb-8 p-4 bg-green-50 border border-green-200 rounded-xl">
               <div className="flex items-start">
-                <div className="text-blue-600 text-2xl mr-3">ℹ️</div>
+                <div className="text-green-600 text-2xl mr-3">🚀</div>
                 <div>
-                  <h3 className="text-blue-800 font-semibold mb-2">Modo Demostración</h3>
-                  <p className="text-blue-700 text-sm mb-3">
-                    Estás viendo proyectos de ejemplo. Las donaciones se simularán pero no se procesarán realmente. 
-                    Para usar el contrato real, asegúrate de que esté desplegado y configurado correctamente.
+                  <h3 className="text-green-800 font-semibold mb-2">Donaciones Reales en Blockchain</h3>
+                  <p className="text-green-700 text-sm mb-3">
+                    Todas las donaciones se procesan directamente en la blockchain a través de MetaMask. 
+                    Los proyectos mostrados son ejemplos de UI, pero las transacciones son reales.
                   </p>
-                  <div className="text-xs text-blue-600">
-                    💡 Tip: Puedes donar y ver cómo funcionaría la aplicación real
+                  <div className="text-xs text-green-600">
+                    💡 Conecta tu wallet y dona con ETH real - Las transacciones quedan registradas en blockchain
                   </div>
                 </div>
               </div>
@@ -284,6 +286,16 @@ const RescataArbolPage = () => {
 
       {donationData && (
         <ConfirmationModal donationData={donationData} isOpen={isConfirmationOpen} onClose={handleCloseConfirmation} />
+      )}
+
+      {/* Componente de debug (solo en desarrollo) */}
+      {process.env.NODE_ENV !== 'production' && (
+        <ContractDebugInfo
+          contractAddress={contractAddress || ""}
+          isContractReady={isContractReady}
+          useSampleData={useSampleData}
+          userAddress={userAddress}
+        />
       )}
     </div>
   );
