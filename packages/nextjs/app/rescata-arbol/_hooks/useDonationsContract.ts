@@ -2,20 +2,36 @@ import { useCallback, useEffect, useState } from "react";
 import type { Donation, DonationData, TreeProject } from "../_types";
 import { parseEther } from "viem";
 import { useAccount, useContractRead, useContractWrite, usePublicClient, useWaitForTransaction } from "wagmi";
+import { sampleProjects } from "../_data/sampleProjects";
+import deployedContracts from "~~/contracts/deployedContracts";
+import { notification } from "~~/utils/scaffold-eth";
 
 // ABI del contrato NGODonations (funciones principales)
+// Nota: Estos ABIs coinciden exactamente con el contrato Donations.sol
 const DONATIONS_ABI = [
   "function getProject(uint256 projectId) external view returns (tuple(uint256 id, string projectName, string ngoName, address ngoWallet, uint256 targetAmount, uint256 raisedAmount, bool active, uint256 createdAt))",
   "function getProjectDonations(uint256 projectId) external view returns (tuple(uint256 amount, string donorName, string message, uint256 time, address donorAddress)[])",
   "function donateToProject(uint256 projectId, string calldata donorName, string calldata message) external payable",
   "function nextProjectId() external view returns (uint256)",
+  "function withdrawFunds(uint256 projectId) external",
+  "function owner() external view returns (address)",
   "event DonationReceived(uint256 indexed projectId, address indexed donor, uint256 amount)",
   "event ProjectCreated(uint256 indexed projectId, string projectName, address indexed ngoWallet, uint256 targetAmount)",
+  "event FundsWithdrawn(uint256 indexed projectId, uint256 amount)",
 ] as const;
 
-// Dirección del contrato (se debe configurar después del deploy)
-const DONATIONS_CONTRACT_ADDRESS =
-  process.env.NEXT_PUBLIC_DONATIONS_CONTRACT_ADDRESS || "0x0000000000000000000000000000000000000000";
+// Obtener la configuración del contrato NGODonations
+const getContractConfig = () => {
+  // Verificar si existe la configuración del contrato en las redes disponibles
+  const liskSepoliaConfig = deployedContracts[4202] as any;
+  const localhostConfig = deployedContracts[31337] as any;
+  
+  const config = liskSepoliaConfig?.NGODonations || localhostConfig?.NGODonations;
+  return config;
+};
+
+const contractConfig = getContractConfig();
+const DONATIONS_CONTRACT_ADDRESS = contractConfig?.address || "0x0000000000000000000000000000000000000000";
 
 // Tipos para los datos del contrato
 type ContractProjectData = {
@@ -40,9 +56,10 @@ type ContractDonationData = {
 export const useDonationsContract = () => {
   const { address: userAddress } = useAccount();
   const publicClient = usePublicClient();
-  const [projects, setProjects] = useState<TreeProject[]>([]);
+  const [projects, setProjects] = useState<TreeProject[]>(sampleProjects); // Mostrar proyectos de ejemplo como UI
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [useSampleData, setUseSampleData] = useState(false); // SIEMPRE usar blockchain real
 
   // Obtener el número total de proyectos
   const { data: nextProjectId } = useContractRead({
@@ -59,13 +76,49 @@ export const useDonationsContract = () => {
     isLoading: isDonating,
   } = useContractWrite({
     address: DONATIONS_CONTRACT_ADDRESS as `0x${string}`,
-    abi: DONATIONS_ABI,
+    abi: contractConfig?.abi || DONATIONS_ABI,
     functionName: "donateToProject",
+    onSuccess: () => {
+      notification.success("¡Donación enviada exitosamente!");
+    },
+    onError: (error) => {
+      console.error("Error al realizar donación:", error);
+      notification.error("Error al procesar la donación");
+    },
   });
 
   // Esperar a que se confirme la transacción
   const { isLoading: isConfirming, isSuccess: isDonationSuccess } = useWaitForTransaction({
     hash: donateData?.hash,
+    onSuccess: (data) => {
+      console.log("🎉 Transacción confirmada:", data);
+      
+      // Buscar el evento DonationReceived en los logs para obtener información adicional
+      const donationEvent = data.logs?.find(
+        (log: any) => log.topics && log.topics[0] && 
+        log.topics[0].includes("DonationReceived")
+      );
+      
+      if (donationEvent) {
+        console.log("📧 Evento de donación encontrado:", donationEvent);
+        notification.success("¡Donación confirmada en blockchain! 🎉");
+      } else {
+        notification.success("¡Donación procesada exitosamente!");
+      }
+      
+      // Actualizar los datos del proyecto después de una donación exitosa
+      if (!useSampleData) {
+        // Recargar proyectos desde el contrato para obtener los datos actualizados
+        setTimeout(() => {
+          console.log("🔄 Recargando proyectos desde el contrato...");
+          loadProjects();
+        }, 2000);
+      }
+    },
+    onError: (error) => {
+      console.error("❌ Error en la confirmación de transacción:", error);
+      notification.error("Error al confirmar la transacción");
+    },
   });
 
   // Cargar un proyecto específico
@@ -77,10 +130,7 @@ export const useDonationsContract = () => {
           return null;
         }
 
-        if (
-          !DONATIONS_CONTRACT_ADDRESS ||
-          DONATIONS_CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000"
-        ) {
+        if (!DONATIONS_CONTRACT_ADDRESS || DONATIONS_CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000") {
           console.warn("Dirección del contrato no configurada");
           return null;
         }
@@ -114,45 +164,56 @@ export const useDonationsContract = () => {
 
   // Cargar todos los proyectos
   const loadProjects = useCallback(async () => {
-    if (!nextProjectId || nextProjectId === 0n) {
-      console.log("No hay proyectos disponibles");
-      return;
-    }
-
-    setIsLoading(true);
+    console.log("🔄 Cargando proyectos...");
+    
+    // SIEMPRE mostrar proyectos de ejemplo como UI, pero SIEMPRE usar blockchain para donaciones
+    setProjects(sampleProjects);
+    setUseSampleData(false); // NUNCA simular, siempre usar blockchain real
+    setIsLoading(false);
     setError(null);
+    
+    // Si hay contrato disponible, intentar cargar proyectos reales también
+    if (contractConfig && nextProjectId && Number(nextProjectId) > 0) {
+      console.log("🔗 Intentando cargar proyectos del contrato...");
+      setIsLoading(true);
 
-    try {
-      const projectPromises: Promise<TreeProject | null>[] = [];
+      try {
+        const projectPromises: Promise<TreeProject | null>[] = [];
 
-      // Crear promesas para cargar cada proyecto
-      for (let i = 1; i < Number(nextProjectId); i++) {
-        projectPromises.push(loadProject(i));
+        // Crear promesas para cargar cada proyecto
+        for (let i = 1; i < Number(nextProjectId); i++) {
+          projectPromises.push(loadProject(i));
+        }
+
+        const loadedProjects = await Promise.all(projectPromises);
+        const validProjects = loadedProjects.filter((project): project is TreeProject => project !== null);
+
+        if (validProjects.length > 0) {
+          // Enriquecer con datos adicionales para la UI
+          const enrichedProjects = validProjects.map(project => ({
+            ...project,
+            image: getProjectImage(project.projectName),
+            description: getProjectDescription(project.projectName),
+            location: getProjectLocation(project.projectName),
+            impact: getProjectImpact(project.projectName),
+            co2Capture: getProjectCO2Capture(project.projectName),
+            urgency: getProjectUrgency(project.projectName),
+          }));
+
+          // Combinar proyectos del contrato con los de ejemplo
+          setProjects([...enrichedProjects, ...sampleProjects]);
+          console.log(`✅ Proyectos del contrato cargados: ${enrichedProjects.length}`);
+        }
+      } catch (err) {
+        console.error("❌ Error loading contract projects:", err);
+        // Mantener solo los proyectos de ejemplo
+      } finally {
+        setIsLoading(false);
       }
-
-      const loadedProjects = await Promise.all(projectPromises);
-      const validProjects = loadedProjects.filter((project): project is TreeProject => project !== null);
-
-      // Enriquecer con datos adicionales para la UI
-      const enrichedProjects = validProjects.map(project => ({
-        ...project,
-        image: getProjectImage(project.projectName),
-        description: getProjectDescription(project.projectName),
-        location: getProjectLocation(project.projectName),
-        impact: getProjectImpact(project.projectName),
-        co2Capture: getProjectCO2Capture(project.projectName),
-        urgency: getProjectUrgency(project.projectName),
-      }));
-
-      setProjects(enrichedProjects);
-      console.log(`Proyectos cargados: ${enrichedProjects.length}`);
-    } catch (err) {
-      console.error("Error loading projects:", err);
-      setError("Error al cargar los proyectos");
-    } finally {
-      setIsLoading(false);
+    } else {
+      console.log("📋 No hay proyectos en el contrato, usando solo proyectos de ejemplo para UI");
     }
-  }, [nextProjectId, loadProject]);
+  }, [nextProjectId, loadProject, contractConfig]);
 
   // Cargar donaciones de un proyecto
   const loadProjectDonations = useCallback(
@@ -163,10 +224,7 @@ export const useDonationsContract = () => {
           return [];
         }
 
-        if (
-          !DONATIONS_CONTRACT_ADDRESS ||
-          DONATIONS_CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000"
-        ) {
+        if (!DONATIONS_CONTRACT_ADDRESS || DONATIONS_CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000") {
           console.warn("Dirección del contrato no configurada");
           return [];
         }
@@ -193,38 +251,93 @@ export const useDonationsContract = () => {
     [publicClient],
   );
 
-  // Hacer una donación
+  // Hacer una donación - SIEMPRE usa blockchain real
   const makeDonation = useCallback(
     async (donationData: DonationData) => {
+      console.log("🚀 Iniciando donación REAL en blockchain:", donationData);
+      
       if (!userAddress) {
+        notification.error("Por favor conecta tu wallet con MetaMask");
         throw new Error("Usuario no conectado");
       }
 
-      if (!donate) {
-        throw new Error("Contrato no disponible");
-      }
-
       if (!donationData.amount || parseFloat(donationData.amount) <= 0) {
+        notification.error("Monto de donación inválido");
         throw new Error("Monto de donación inválido");
       }
 
       if (!donationData.donorName || donationData.donorName.trim() === "") {
+        notification.error("Nombre del donante es requerido");
         throw new Error("Nombre del donante es requerido");
+      }
+
+      // SIEMPRE procesar donación real en blockchain
+      console.log("⛓️ Procesando donación REAL en blockchain...");
+      console.log("📋 Datos del contrato:", {
+        address: DONATIONS_CONTRACT_ADDRESS,
+        contractConfig: !!contractConfig,
+        donateFunction: !!donate,
+        userAddress: userAddress
+      });
+
+      if (!contractConfig || !contractConfig.address) {
+        notification.error("Contrato no configurado. Verifica que el contrato NGODonations esté desplegado.");
+        throw new Error("Contrato no configurado");
+      }
+
+      if (!donate) {
+        notification.error("Función de donación no disponible. Verifica tu conexión a MetaMask.");
+        throw new Error("Función de donación no disponible");
       }
 
       try {
         const amountInWei = parseEther(donationData.amount);
+        console.log("💰 Monto en wei:", amountInWei.toString());
+        console.log("📝 Argumentos del contrato:", {
+          projectId: BigInt(donationData.projectId),
+          donorName: donationData.donorName,
+          message: donationData.message || "¡Salvemos este árbol!",
+          value: amountInWei.toString()
+        });
 
-        await donate({
-          args: [BigInt(donationData.projectId), donationData.donorName, donationData.message || ""],
+        notification.info("🔄 Enviando transacción a blockchain... Confirma en MetaMask");
+
+        const tx = await donate({
+          args: [
+            BigInt(donationData.projectId), 
+            donationData.donorName, 
+            donationData.message || "¡Salvemos este árbol!"
+          ],
           value: amountInWei,
         });
-      } catch (err) {
-        console.error("Error making donation:", err);
-        throw new Error("Error al procesar la donación");
+
+        console.log("✅ Transacción enviada a blockchain:", tx);
+        notification.success("🎉 Transacción enviada! Esperando confirmación...");
+        
+      } catch (err: any) {
+        console.error("❌ Error making donation:", err);
+        
+        // Manejar diferentes tipos de errores
+        if (err?.message?.includes("User rejected") || err?.message?.includes("user rejected")) {
+          notification.error("❌ Transacción cancelada por el usuario");
+        } else if (err?.message?.includes("insufficient funds")) {
+          notification.error("❌ Fondos insuficientes en la wallet");
+        } else if (err?.message?.includes("OnlyOwner")) {
+          notification.error("❌ Solo el propietario puede crear proyectos");
+        } else if (err?.message?.includes("ProjectNotFound")) {
+          notification.error("❌ Proyecto no encontrado en el contrato");
+        } else if (err?.message?.includes("InsufficientFunds")) {
+          notification.error("❌ El monto enviado es 0 o inválido");
+        } else if (err?.message?.includes("InvalidArguments")) {
+          notification.error("❌ Argumentos inválidos enviados al contrato");
+        } else {
+          notification.error(`❌ Error: ${err?.message || "Error desconocido en blockchain"}`);
+        }
+        
+        throw err;
       }
     },
-    [donate, userAddress],
+    [donate, userAddress, contractConfig],
   );
 
   // Cargar proyectos cuando cambie nextProjectId
@@ -300,11 +413,27 @@ export const useDonationsContract = () => {
     return urgencyMap[projectName] || "medium";
   };
 
+  // Debug: Información del contrato para verificar configuración
+  useEffect(() => {
+    console.log("🔧 Configuración del contrato NGODonations:");
+    console.log("📍 Dirección:", DONATIONS_CONTRACT_ADDRESS);
+    console.log("⚙️ Config disponible:", !!contractConfig);
+    console.log("🌐 Usuario conectado:", !!userAddress);
+    console.log("⛓️ Modo blockchain REAL:", !useSampleData);
+    if (contractConfig) {
+      console.log("📋 ABI disponible:", !!contractConfig.abi);
+      console.log("🚀 LISTO para donaciones reales!");
+    } else {
+      console.warn("⚠️ Contrato no configurado - verifica el deployment");
+    }
+  }, [contractConfig, userAddress, useSampleData]);
+
   return {
     // Estado
     projects,
     isLoading,
     error,
+    useSampleData,
 
     // Acciones
     loadProjects,
@@ -320,5 +449,10 @@ export const useDonationsContract = () => {
 
     // Utilidades
     refreshProjects: loadProjects,
+    contractAddress: DONATIONS_CONTRACT_ADDRESS,
+    
+    // Debug info
+    contractConfig,
+    isContractReady: !!contractConfig && !!contractConfig.address,
   };
 };
